@@ -24,12 +24,13 @@ struct ContentView: View {
                     .padding(.vertical, 10)
                     .background(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(Color.white)
+                            .fill(Color.black)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(Color.black.opacity(0.08), lineWidth: 1)
+                            .stroke(Color.white.opacity(0.14), lineWidth: 1)
                     )
+                    .foregroundStyle(.white)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
@@ -49,7 +50,7 @@ struct ContentView: View {
         }
         .padding(16)
         .frame(width: 430, height: 560)
-        .background(Color(red: 0.95, green: 0.93, blue: 0.89))
+        .background(Color.black)
         .sheet(isPresented: $showAddPrompt) {
             AddPromptView { title, content in
                 store.addPrompt(title: title, content: content)
@@ -64,10 +65,10 @@ struct ContentView: View {
         HStack(spacing: 12) {
             Text("PopPrompt")
                 .font(.system(size: 20, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(.black)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .background(Color.black)
+                .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
             Spacer()
@@ -91,15 +92,15 @@ struct ContentView: View {
         VStack(spacing: 12) {
             Image(systemName: "rectangle.stack.badge.plus")
                 .font(.system(size: 32, weight: .medium))
-                .foregroundStyle(.black.opacity(0.75))
+                .foregroundStyle(.white.opacity(0.82))
 
             Text(searchText.isEmpty ? "No prompts yet" : "No matching prompts")
                 .font(.headline.weight(.semibold))
-                .foregroundStyle(.black)
+                .foregroundStyle(.white)
 
             Text(searchText.isEmpty ? "Tap the plus button to save your first prompt." : "Try a different title or keyword.")
                 .font(.subheadline)
-                .foregroundStyle(.black.opacity(0.65))
+                .foregroundStyle(.white.opacity(0.62))
                 .multilineTextAlignment(.center)
 
             if searchText.isEmpty {
@@ -109,8 +110,8 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .background(Color.black)
-                .foregroundStyle(.white)
+                .background(Color.white)
+                .foregroundStyle(.black)
                 .clipShape(Capsule())
             }
         }
@@ -118,7 +119,11 @@ struct ContentView: View {
         .padding(24)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color.white.opacity(0.75))
+                .fill(Color.white.opacity(0.06))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
         )
     }
 
@@ -126,9 +131,9 @@ struct ContentView: View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(isActive ? .white : .black)
+                .foregroundStyle(isActive ? .black : .white)
                 .frame(width: 36, height: 36)
-                .background(isActive ? Color.black : Color.white.opacity(0.92))
+                .background(isActive ? Color.white : Color.white.opacity(0.08))
                 .clipShape(Circle())
         }
         .buttonStyle(.plain)
@@ -141,7 +146,7 @@ struct ContentView: View {
             HStack(spacing: 10) {
                 Text(prompt.title)
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.white)
                     .lineLimit(1)
 
                 Spacer(minLength: 12)
@@ -166,12 +171,12 @@ struct ContentView: View {
 
                     Text(prompt.content)
                         .font(.system(size: 13, weight: .regular, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.78))
+                        .foregroundStyle(.white.opacity(0.78))
                         .fixedSize(horizontal: false, vertical: true)
 
                     Text(prompt.createdAt.formatted(date: .abbreviated, time: .shortened))
                         .font(.caption)
-                        .foregroundStyle(.black.opacity(0.45))
+                        .foregroundStyle(.white.opacity(0.45))
                 }
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -179,22 +184,22 @@ struct ContentView: View {
         .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.white)
+                .fill(Color.white.opacity(0.06))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.black.opacity(0.08), lineWidth: 1)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 6)
+        .shadow(color: Color.white.opacity(0.03), radius: 2, x: 0, y: 0)
     }
 
     private func cardIcon(systemName: String, rotation: Double = 0, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(.black)
+                .foregroundStyle(.white)
                 .frame(width: 28, height: 28)
-                .background(Color.black.opacity(0.06))
+                .background(Color.white.opacity(0.08))
                 .clipShape(Circle())
                 .rotationEffect(.degrees(rotation))
         }
