@@ -121,10 +121,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard popover.isShown else { return }
         guard let popoverWindow = popover.contentViewController?.view.window else { return }
 
-        if event.window !== popoverWindow && event.window !== statusItem?.button?.window {
-            popover.performClose(nil)
-            stopEventMonitors()
+        if let eventWindow = event.window {
+            if isPopoverRelatedWindow(eventWindow, popoverWindow: popoverWindow) {
+                return
+            }
+        } else {
+            // Global events often arrive without a window reference; treat them as outside clicks.
         }
+
+        popover.performClose(nil)
+        stopEventMonitors()
+    }
+
+    private func isPopoverRelatedWindow(_ window: NSWindow, popoverWindow: NSWindow) -> Bool {
+        if window === popoverWindow || window === statusItem?.button?.window {
+            return true
+        }
+
+        var currentWindow: NSWindow? = window
+        while let candidate = currentWindow {
+            if candidate === popoverWindow || candidate === statusItem?.button?.window {
+                return true
+            }
+
+            if candidate.parent === popoverWindow || candidate.sheetParent === popoverWindow {
+                return true
+            }
+
+            currentWindow = candidate.parent ?? candidate.sheetParent
+        }
+
+        return false
     }
 
     @objc private func quitApp() {
