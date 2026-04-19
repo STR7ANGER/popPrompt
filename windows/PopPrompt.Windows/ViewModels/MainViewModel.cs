@@ -25,6 +25,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
         _requestOpenAddPrompt = requestOpenAddPrompt;
 
         Prompts = new ObservableCollection<Prompt>(_store.Load());
+        PromptsView = CollectionViewSource.GetDefaultView(Prompts);
+        PromptsView.Filter = FilterPrompt;
+
         Prompts.CollectionChanged += (_, _) =>
         {
             SavePrompts();
@@ -33,9 +36,6 @@ public sealed class MainViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(EmptyStateBody));
             PromptsView.Refresh();
         };
-
-        PromptsView = CollectionViewSource.GetDefaultView(Prompts);
-        PromptsView.Filter = FilterPrompt;
 
         ToggleSearchCommand = new RelayCommand(ToggleSearch);
         OpenAddPromptCommand = new RelayCommand(() => _requestOpenAddPrompt());
@@ -170,7 +170,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             return;
         }
 
-        Clipboard.SetText(prompt.Content);
+        System.Windows.Clipboard.SetText(prompt.Content);
         prompt.IsCopied = true;
         PromptsView.Refresh();
 
