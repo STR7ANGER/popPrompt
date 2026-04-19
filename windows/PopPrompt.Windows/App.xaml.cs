@@ -1,14 +1,14 @@
 using System.Drawing;
 using System.Windows;
-using System.Windows.Forms;
+using Forms = System.Windows.Forms;
 using PopPrompt.Windows.Services;
 using PopPrompt.Windows.ViewModels;
 
 namespace PopPrompt.Windows;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
-    private NotifyIcon? _notifyIcon;
+    private Forms.NotifyIcon? _notifyIcon;
     private MainWindow? _mainWindow;
     private MainViewModel? _mainViewModel;
 
@@ -37,10 +37,10 @@ public partial class App : Application
 
     private void ConfigureTrayIcon()
     {
-        var contextMenu = new ContextMenuStrip();
+        var contextMenu = new Forms.ContextMenuStrip();
         contextMenu.Items.Add("Quit PopPrompt", null, (_, _) => QuitApplication());
 
-        _notifyIcon = new NotifyIcon
+        _notifyIcon = new Forms.NotifyIcon
         {
             Icon = SystemIcons.Application,
             Text = "PopPrompt",
@@ -51,9 +51,9 @@ public partial class App : Application
         _notifyIcon.MouseUp += OnTrayIconMouseUp;
     }
 
-    private void OnTrayIconMouseUp(object? sender, MouseEventArgs e)
+    private void OnTrayIconMouseUp(object? sender, Forms.MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.Left)
+        if (e.Button == Forms.MouseButtons.Left)
         {
             ToggleMainWindow();
         }
@@ -87,8 +87,8 @@ public partial class App : Application
             return;
         }
 
-        var cursorPosition = Cursor.Position;
-        var screen = Screen.FromPoint(cursorPosition);
+        var cursorPosition = Forms.Cursor.Position;
+        var screen = Forms.Screen.FromPoint(cursorPosition);
         var area = screen.WorkingArea;
 
         _mainWindow.Left = area.Right - _mainWindow.Width - 20;
