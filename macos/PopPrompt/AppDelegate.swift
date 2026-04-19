@@ -33,7 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         guard let button = item.button else { return }
 
-        button.image = NSImage(named: "StatusIcon") ?? NSImage(systemSymbolName: "text.bubble", accessibilityDescription: "PopPrompt")
+        button.image = NSImage(systemSymbolName: "text.bubble", accessibilityDescription: "PopPrompt")
         button.image?.isTemplate = true
         button.action = #selector(handleStatusItemClick(_:))
         button.target = self

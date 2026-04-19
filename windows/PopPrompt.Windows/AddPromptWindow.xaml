@@ -11,14 +11,14 @@
         AllowsTransparency="True"
         ShowInTaskbar="False">
     <Window.Resources>
-        <Style x:Key="PillButtonStyle" TargetType="Button">
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="Padding" Value="16,10" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="999">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
@@ -52,11 +52,16 @@
                 </StackPanel>
 
                 <Button DockPanel.Dock="Right"
-                        Content="Close"
+                        Content="✕"
                         Click="OnCloseClick"
                         Background="#14FFFFFF"
                         Foreground="White"
-                        Style="{StaticResource PillButtonStyle}" />
+                        Width="38"
+                        Height="38"
+                        Padding="0"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Style="{StaticResource RoundedButtonStyle}" />
             </DockPanel>
 
             <StackPanel Grid.Row="1" Margin="0,22,0,0">
@@ -107,20 +112,13 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="0,20,0,0">
-                <Button Content="Cancel"
-                        Click="OnCloseClick"
-                        Background="#14FFFFFF"
-                        Foreground="White"
-                        Margin="0,0,10,0"
-                        MinWidth="92"
-                        Style="{StaticResource PillButtonStyle}" />
-
                 <Button Content="Save"
                         Click="OnSaveClick"
                         Background="White"
                         Foreground="Black"
+                        Height="42"
                         MinWidth="92"
-                        Style="{StaticResource PillButtonStyle}" />
+                        Style="{StaticResource RoundedButtonStyle}" />
             </StackPanel>
         </Grid>
     </Border>
