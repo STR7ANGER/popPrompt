@@ -39,7 +39,6 @@ jobs:
           mkdir -p dist dmg
           cp -R "build/macos/Build/Products/Release/PopPrompt.app" "dmg/PopPrompt.app"
           create-dmg \
-            --overwrite \
             --background "macos/Branding/DmgBackground.png" \
             --window-size 680 420 \
             --icon-size 112 \
