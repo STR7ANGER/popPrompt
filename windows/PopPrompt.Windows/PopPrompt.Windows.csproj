@@ -9,5 +9,6 @@
     <AssemblyName>PopPrompt.Windows</AssemblyName>
     <RootNamespace>PopPrompt.Windows</RootNamespace>
     <PlatformTarget>x64</PlatformTarget>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>

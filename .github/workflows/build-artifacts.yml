@@ -30,19 +30,24 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build
 
+      - name: Install DMG tooling
+        run: brew install create-dmg
+
       - name: Package DMG
         run: |
           rm -rf dist dmg
           mkdir -p dist dmg
           cp -R "build/macos/Build/Products/Release/PopPrompt.app" "dmg/PopPrompt.app"
-          ln -s /Applications "dmg/Applications"
-
-          hdiutil create \
-            -volname "PopPrompt" \
-            -srcfolder "dmg" \
-            -ov \
-            -format UDZO \
-            "dist/PopPrompt.dmg"
+          create-dmg \
+            --overwrite \
+            --background "macos/Branding/DmgBackground.png" \
+            --window-size 680 420 \
+            --icon-size 112 \
+            --icon "PopPrompt.app" 160 250 \
+            --hide-extension "PopPrompt.app" \
+            --app-drop-link 500 250 \
+            "dist/PopPrompt.dmg" \
+            "dmg"
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
@@ -81,8 +86,16 @@ jobs:
           -c Release
           -p:SourceDir=${{ github.workspace }}\artifacts\windows-publish
 
+      - name: Flatten MSI output
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          $msi = Get-ChildItem -Path windows/PopPrompt.Windows.Setup/bin -Filter *.msi -Recurse | Select-Object -First 1
+          if (-not $msi) { throw "MSI not found" }
+          Copy-Item $msi.FullName dist/PopPrompt.msi -Force
+
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v4
         with:
           name: PopPrompt-msi
-          path: windows/PopPrompt.Windows.Setup/bin/**/*.msi
+          path: dist/PopPrompt.msi
