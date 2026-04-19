@@ -1,0 +1,287 @@
+// !$*UTF8*$!
+{
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A00000000000000000000001 /* PopPromptApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000011 /* PopPromptApp.swift */; };
+		A00000000000000000000002 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000012 /* Prompt.swift */; };
+		A00000000000000000000003 /* PromptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000013 /* PromptStore.swift */; };
+		A00000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000014 /* ContentView.swift */; };
+		A00000000000000000000005 /* PromptListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000015 /* PromptListView.swift */; };
+		A00000000000000000000006 /* PromptDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000016 /* PromptDetailView.swift */; };
+		A00000000000000000000007 /* AddPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000017 /* AddPromptView.swift */; };
+		A00000000000000000000008 /* ClipboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000018 /* ClipboardManager.swift */; };
+		A00000000000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000019 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A0000000000000000000000A /* PopPrompt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopPrompt.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A00000000000000000000011 /* PopPromptApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopPromptApp.swift; sourceTree = "<group>"; };
+		A00000000000000000000012 /* Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
+		A00000000000000000000013 /* PromptStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptStore.swift; sourceTree = "<group>"; };
+		A00000000000000000000014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A00000000000000000000015 /* PromptListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptListView.swift; sourceTree = "<group>"; };
+		A00000000000000000000016 /* PromptDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptDetailView.swift; sourceTree = "<group>"; };
+		A00000000000000000000017 /* AddPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPromptView.swift; sourceTree = "<group>"; };
+		A00000000000000000000018 /* ClipboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardManager.swift; sourceTree = "<group>"; };
+		A00000000000000000000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A0000000000000000000001A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A0000000000000000000001B = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000001C /* PopPrompt */,
+				A0000000000000000000001D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A0000000000000000000001C /* PopPrompt */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000020 /* Models */,
+				A00000000000000000000021 /* ViewModels */,
+				A00000000000000000000022 /* Views */,
+				A00000000000000000000023 /* Utils */,
+				A00000000000000000000019 /* Assets.xcassets */,
+				A00000000000000000000011 /* PopPromptApp.swift */,
+			);
+			path = PopPrompt;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000001D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000000A /* PopPrompt.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000020 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000012 /* Prompt.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000021 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000013 /* PromptStore.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000022 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000014 /* ContentView.swift */,
+				A00000000000000000000015 /* PromptListView.swift */,
+				A00000000000000000000016 /* PromptDetailView.swift */,
+				A00000000000000000000017 /* AddPromptView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000023 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000018 /* ClipboardManager.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A00000000000000000000024 /* PopPrompt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A00000000000000000000025 /* Build configuration list for PBXNativeTarget "PopPrompt" */;
+			buildPhases = (
+				A00000000000000000000026 /* Sources */,
+				A0000000000000000000001A /* Frameworks */,
+				A00000000000000000000027 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PopPrompt;
+			productName = PopPrompt;
+			productReference = A0000000000000000000000A /* PopPrompt.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00000000000000000000028 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					A00000000000000000000024 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = A00000000000000000000029 /* Build configuration list for PBXProject "PopPrompt" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A0000000000000000000001B;
+			productRefGroup = A0000000000000000000001D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A00000000000000000000024 /* PopPrompt */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A00000000000000000000027 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A00000000000000000000009 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A00000000000000000000026 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A00000000000000000000007 /* AddPromptView.swift in Sources */,
+				A00000000000000000000008 /* ClipboardManager.swift in Sources */,
+				A00000000000000000000004 /* ContentView.swift in Sources */,
+				A00000000000000000000001 /* PopPromptApp.swift in Sources */,
+				A00000000000000000000006 /* PromptDetailView.swift in Sources */,
+				A00000000000000000000005 /* PromptListView.swift in Sources */,
+				A00000000000000000000002 /* Prompt.swift in Sources */,
+				A00000000000000000000003 /* PromptStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A0000000000000000000002A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = PopPrompt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.str7anger.PopPrompt;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A0000000000000000000002B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = PopPrompt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.str7anger.PopPrompt;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A0000000000000000000002C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+			};
+			name = Debug;
+		};
+		A0000000000000000000002D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A00000000000000000000025 /* Build configuration list for PBXNativeTarget "PopPrompt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0000000000000000000002A /* Debug */,
+				A0000000000000000000002B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A00000000000000000000029 /* Build configuration list for PBXProject "PopPrompt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0000000000000000000002C /* Debug */,
+				A0000000000000000000002D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A00000000000000000000028 /* Project object */;
+}

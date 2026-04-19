@@ -1,0 +1,44 @@
+name: Build DMG
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-dmg:
+    runs-on: macos-14
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build PopPrompt
+        run: |
+          xcodebuild \
+            -project PopPrompt.xcodeproj \
+            -scheme PopPrompt \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package DMG
+        run: |
+          mkdir -p dist
+          hdiutil create \
+            -volname "PopPrompt" \
+            -srcfolder "build/Build/Products/Release/PopPrompt.app" \
+            -ov \
+            -format UDZO \
+            "dist/PopPrompt.dmg"
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PopPrompt-dmg
+          path: dist/PopPrompt.dmg
