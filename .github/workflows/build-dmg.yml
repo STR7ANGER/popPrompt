@@ -29,10 +29,15 @@ jobs:
 
       - name: Package DMG
         run: |
-          mkdir -p dist
+          rm -rf dist dmg
+          mkdir -p dist dmg
+          cp -R "build/Build/Products/Release/PopPrompt.app" "dmg/PopPrompt.app"
+          ln -s /Applications "dmg/Applications"
+
+          # Create a user-friendly drag-to-Applications DMG layout.
           hdiutil create \
             -volname "PopPrompt" \
-            -srcfolder "build/Build/Products/Release/PopPrompt.app" \
+            -srcfolder "dmg" \
             -ov \
             -format UDZO \
             "dist/PopPrompt.dmg"
