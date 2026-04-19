@@ -4,8 +4,4 @@
     <Platform>x64</Platform>
     <DefineConstants>SourceDir=$(SourceDir)</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.4" />
-  </ItemGroup>
 </Project>

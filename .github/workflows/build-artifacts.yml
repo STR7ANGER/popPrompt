@@ -38,13 +38,13 @@ jobs:
           rm -rf dist dmg
           mkdir -p dist dmg
           cp -R "build/macos/Build/Products/Release/PopPrompt.app" "dmg/PopPrompt.app"
+          ln -s /Applications "dmg/Applications"
           create-dmg \
-            --background "macos/Branding/DmgBackground.png" \
-            --window-size 680 420 \
-            --icon-size 112 \
-            --icon "PopPrompt.app" 160 250 \
+            --window-size 600 320 \
+            --icon-size 100 \
+            --icon "PopPrompt.app" 175 160 \
             --hide-extension "PopPrompt.app" \
-            --app-drop-link 500 250 \
+            --icon "Applications" 425 160 \
             "dist/PopPrompt.dmg" \
             "dmg"
 

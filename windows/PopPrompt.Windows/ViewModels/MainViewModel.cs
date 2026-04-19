@@ -89,6 +89,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
             _searchText = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(IsSearchEmpty));
             PromptsView.Refresh();
             OnPropertyChanged(nameof(HasPrompts));
             OnPropertyChanged(nameof(EmptyStateTitle));
@@ -116,6 +117,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
     public string SearchButtonBackground => IsSearchVisible ? "White" : "#14FFFFFF";
 
     public string SearchButtonForeground => IsSearchVisible ? "Black" : "White";
+
+    public bool IsSearchEmpty => string.IsNullOrWhiteSpace(SearchText);
 
     public string EmptyStateTitle => string.IsNullOrWhiteSpace(SearchText) ? "No prompts yet" : "No matching prompts";
 

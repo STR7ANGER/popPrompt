@@ -8,7 +8,24 @@
         ResizeMode="NoResize"
         Background="Black"
         WindowStyle="None"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <Style x:Key="PillButtonStyle" TargetType="Button">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="999">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Border Background="Black"
             BorderBrush="#1AFFFFFF"
             BorderThickness="1"
@@ -39,17 +56,7 @@
                         Click="OnCloseClick"
                         Background="#14FFFFFF"
                         Foreground="White"
-                        BorderThickness="0"
-                        Padding="14,8"
-                        Cursor="Hand">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="999">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                        Style="{StaticResource PillButtonStyle}" />
             </DockPanel>
 
             <StackPanel Grid.Row="1" Margin="0,22,0,0">
@@ -104,34 +111,16 @@
                         Click="OnCloseClick"
                         Background="#14FFFFFF"
                         Foreground="White"
-                        BorderThickness="0"
-                        Padding="16,10"
-                        Cursor="Hand"
-                        Margin="0,0,10,0">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="999">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                        Margin="0,0,10,0"
+                        MinWidth="92"
+                        Style="{StaticResource PillButtonStyle}" />
 
                 <Button Content="Save"
                         Click="OnSaveClick"
                         Background="White"
                         Foreground="Black"
-                        BorderThickness="0"
-                        Padding="20,10"
-                        Cursor="Hand">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="999">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                        MinWidth="92"
+                        Style="{StaticResource PillButtonStyle}" />
             </StackPanel>
         </Grid>
     </Border>

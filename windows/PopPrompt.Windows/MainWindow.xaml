@@ -101,12 +101,19 @@
                     BorderBrush="#24FFFFFF"
                     BorderThickness="1"
                     Visibility="{Binding IsSearchVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         Foreground="White"
-                         CaretBrush="White"
-                         FontSize="13" />
+                <Grid>
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="White"
+                             CaretBrush="White"
+                             FontSize="13" />
+                    <TextBlock Text="Search prompts"
+                               Foreground="#66FFFFFF"
+                               FontSize="13"
+                               IsHitTestVisible="False"
+                               Visibility="{Binding IsSearchEmpty, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </Grid>
             </Border>
 
             <Grid Grid.Row="2" Margin="0,14,0,0">
