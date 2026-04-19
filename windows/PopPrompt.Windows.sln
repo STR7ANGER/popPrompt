@@ -1,0 +1,28 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopPrompt.Windows", "PopPrompt.Windows\PopPrompt.Windows.csproj", "{2AF84DE5-478B-4D74-93B1-16E0E3AC872D}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PopPrompt.Windows.Setup", "PopPrompt.Windows.Setup\PopPrompt.Windows.Setup.wixproj", "{E1C1D986-A7BE-4B8B-B0F7-B641A79042DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2AF84DE5-478B-4D74-93B1-16E0E3AC872D}.Debug|x64.ActiveCfg = Debug|x64
+		{2AF84DE5-478B-4D74-93B1-16E0E3AC872D}.Debug|x64.Build.0 = Debug|x64
+		{2AF84DE5-478B-4D74-93B1-16E0E3AC872D}.Release|x64.ActiveCfg = Release|x64
+		{2AF84DE5-478B-4D74-93B1-16E0E3AC872D}.Release|x64.Build.0 = Release|x64
+		{E1C1D986-A7BE-4B8B-B0F7-B641A79042DF}.Debug|x64.ActiveCfg = Debug|x64
+		{E1C1D986-A7BE-4B8B-B0F7-B641A79042DF}.Debug|x64.Build.0 = Debug|x64
+		{E1C1D986-A7BE-4B8B-B0F7-B641A79042DF}.Release|x64.ActiveCfg = Release|x64
+		{E1C1D986-A7BE-4B8B-B0F7-B641A79042DF}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

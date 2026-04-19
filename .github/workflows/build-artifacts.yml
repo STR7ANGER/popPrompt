@@ -1,0 +1,85 @@
+name: Build Installers
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build PopPrompt for macOS
+        run: |
+          xcodebuild \
+            -project macos/PopPrompt.xcodeproj \
+            -scheme PopPrompt \
+            -configuration Release \
+            -derivedDataPath build/macos \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package DMG
+        run: |
+          rm -rf dist dmg
+          mkdir -p dist dmg
+          cp -R "build/macos/Build/Products/Release/PopPrompt.app" "dmg/PopPrompt.app"
+          ln -s /Applications "dmg/Applications"
+
+          hdiutil create \
+            -volname "PopPrompt" \
+            -srcfolder "dmg" \
+            -ov \
+            -format UDZO \
+            "dist/PopPrompt.dmg"
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PopPrompt-dmg
+          path: dist/PopPrompt.dmg
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore Windows app
+        run: dotnet restore windows/PopPrompt.Windows/PopPrompt.Windows.csproj
+
+      - name: Publish Windows tray app
+        run: >
+          dotnet publish windows/PopPrompt.Windows/PopPrompt.Windows.csproj
+          -c Release
+          -r win-x64
+          -p:PublishSingleFile=true
+          -p:SelfContained=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o ${{ github.workspace }}\artifacts\windows-publish
+
+      - name: Build MSI installer
+        run: >
+          dotnet build windows/PopPrompt.Windows.Setup/PopPrompt.Windows.Setup.wixproj
+          -c Release
+          -p:SourceDir=${{ github.workspace }}\artifacts\windows-publish
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PopPrompt-msi
+          path: windows/PopPrompt.Windows.Setup/bin/**/*.msi

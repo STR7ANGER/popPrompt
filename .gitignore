@@ -3,3 +3,6 @@ DerivedData/
 build/
 *.xcuserstate
 xcuserdata/
+**/bin/
+**/obj/
+artifacts/

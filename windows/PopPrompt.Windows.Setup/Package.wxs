@@ -1,0 +1,43 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="PopPrompt"
+           Manufacturer="STR7ANGER"
+           Version="1.0.0"
+           UpgradeCode="8E6B811E-57A0-4DB0-9854-D47F62A79B4D"
+           Scope="perMachine"
+           InstallerVersion="500"
+           Compressed="yes">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="PopPrompt">
+        <Component Id="AppExecutableComponent" Guid="A7F621FE-1D6F-46E7-A03C-4748980E0171">
+          <File Id="AppExecutableFile" Source="$(var.SourceDir)\PopPrompt.Windows.exe" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuDir" Name="PopPrompt">
+        <Component Id="StartMenuShortcutComponent" Guid="C8BD7739-F8A0-46E2-8D42-C0C8C213A3D0">
+          <Shortcut Id="ApplicationShortcut"
+                    Name="PopPrompt"
+                    Target="[INSTALLFOLDER]PopPrompt.Windows.exe"
+                    WorkingDirectory="INSTALLFOLDER" />
+          <RemoveFolder Id="RemoveProgramMenuDir" On="uninstall" />
+          <RegistryValue Root="HKCU"
+                         Key="Software\STR7ANGER\PopPrompt"
+                         Name="StartMenuShortcutInstalled"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="PopPrompt" Level="1">
+      <ComponentRef Id="AppExecutableComponent" />
+      <ComponentRef Id="StartMenuShortcutComponent" />
+    </Feature>
+  </Package>
+</Wix>
