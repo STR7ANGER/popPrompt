@@ -64,12 +64,12 @@ struct ContentView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Text("PopPrompt")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(.black)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.horizontal, 13)
+                .padding(.vertical, 9)
                 .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
 
             Spacer()
 
