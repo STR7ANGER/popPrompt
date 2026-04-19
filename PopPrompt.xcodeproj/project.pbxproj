@@ -13,6 +13,7 @@
 		A00000000000000000000007 /* AddPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000017 /* AddPromptView.swift */; };
 		A00000000000000000000008 /* ClipboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000018 /* ClipboardManager.swift */; };
 		A00000000000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000019 /* Assets.xcassets */; };
+		A0000000000000000000000B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000001E /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		A00000000000000000000017 /* AddPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPromptView.swift; sourceTree = "<group>"; };
 		A00000000000000000000018 /* ClipboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardManager.swift; sourceTree = "<group>"; };
 		A00000000000000000000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A0000000000000000000001E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 				A00000000000000000000022 /* Views */,
 				A00000000000000000000023 /* Utils */,
 				A00000000000000000000019 /* Assets.xcassets */,
+				A0000000000000000000001E /* AppDelegate.swift */,
 				A00000000000000000000011 /* PopPromptApp.swift */,
 			);
 			path = PopPrompt;
@@ -173,6 +176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00000000000000000000007 /* AddPromptView.swift in Sources */,
+				A0000000000000000000000B /* AppDelegate.swift in Sources */,
 				A00000000000000000000008 /* ClipboardManager.swift in Sources */,
 				A00000000000000000000004 /* ContentView.swift in Sources */,
 				A00000000000000000000001 /* PopPromptApp.swift in Sources */,

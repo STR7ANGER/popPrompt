@@ -2,19 +2,11 @@ import SwiftUI
 
 @main
 struct PopPromptApp: App {
-    @StateObject private var store = PromptStore()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        WindowGroup("PopPrompt") {
-            ContentView()
-                .environmentObject(store)
+        Settings {
+            EmptyView()
         }
-        .defaultSize(width: 420, height: 520)
-
-        MenuBarExtra("PopPrompt", systemImage: "text.bubble") {
-            ContentView()
-                .environmentObject(store)
-        }
-        .menuBarExtraStyle(.window)
     }
 }

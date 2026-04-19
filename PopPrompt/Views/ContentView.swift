@@ -4,118 +4,221 @@ struct ContentView: View {
     @EnvironmentObject private var store: PromptStore
 
     @State private var searchText = ""
-    @State private var selectedPromptID: Prompt.ID?
+    @State private var expandedPromptIDs: Set<Prompt.ID> = []
     @State private var showAddPrompt = false
+    @State private var showSearch = false
+    @State private var copiedPromptID: Prompt.ID?
 
     private var filteredPrompts: [Prompt] {
         store.filteredPrompts(matching: searchText)
     }
 
-    private var selectedPrompt: Prompt? {
-        store.prompt(withID: selectedPromptID)
-    }
-
     var body: some View {
-        VStack(spacing: 0) {
-            if let selectedPrompt {
-                PromptDetailView(
-                    prompt: selectedPrompt,
-                    onBack: { selectedPromptID = nil },
-                    onDelete: {
-                        store.deletePrompt(selectedPrompt)
-                        selectedPromptID = nil
-                    },
-                    onCopy: { copy(selectedPrompt) }
-                )
-            } else {
-                VStack(spacing: 12) {
-                    header
+        VStack(alignment: .leading, spacing: 14) {
+            header
 
-                    if filteredPrompts.isEmpty {
-                        emptyState
-                    } else {
-                        PromptListView(
-                            prompts: filteredPrompts,
-                            selectedPromptID: $selectedPromptID,
-                            onDelete: { offsets, prompts in
-                                store.deletePrompts(at: offsets, from: prompts)
-                            }
-                        )
+            if showSearch {
+                TextField("Search prompts", text: $searchText)
+                    .textFieldStyle(.plain)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(Color.white)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(Color.black.opacity(0.08), lineWidth: 1)
+                    )
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            if filteredPrompts.isEmpty {
+                emptyState
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(filteredPrompts) { prompt in
+                            promptCard(prompt)
+                        }
                     }
+                    .padding(.bottom, 4)
                 }
-                .padding(16)
+                .scrollIndicators(.hidden)
             }
         }
-        .frame(width: 420, height: 520)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .padding(16)
+        .frame(width: 430, height: 560)
+        .background(Color(red: 0.95, green: 0.93, blue: 0.89))
         .sheet(isPresented: $showAddPrompt) {
             AddPromptView { title, content in
                 store.addPrompt(title: title, content: content)
             }
         }
         .animation(.smooth(duration: 0.2), value: filteredPrompts)
-        .animation(.smooth(duration: 0.2), value: selectedPromptID)
+        .animation(.smooth(duration: 0.2), value: expandedPromptIDs)
+        .animation(.smooth(duration: 0.2), value: showSearch)
     }
 
     private var header: some View {
-        VStack(spacing: 12) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("PopPrompt")
-                        .font(.title3.weight(.semibold))
+        HStack(spacing: 12) {
+            Text("PopPrompt")
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color.black)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
-                    Text("Reusable prompts, one click away")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            Spacer()
+
+            headerIcon(systemName: "magnifyingglass", isActive: showSearch) {
+                withAnimation {
+                    showSearch.toggle()
+                    if !showSearch {
+                        searchText = ""
+                    }
                 }
-
-                Spacer()
-
-                Button {
-                    showAddPrompt = true
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .buttonStyle(.borderedProminent)
-                .help("Add prompt")
             }
 
-            TextField("Search prompts", text: $searchText)
-                .textFieldStyle(.roundedBorder)
+            headerIcon(systemName: "plus") {
+                showAddPrompt = true
+            }
         }
     }
 
     private var emptyState: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "text.bubble")
-                .font(.system(size: 32))
-                .foregroundStyle(.secondary)
+        VStack(spacing: 12) {
+            Image(systemName: "rectangle.stack.badge.plus")
+                .font(.system(size: 32, weight: .medium))
+                .foregroundStyle(.black.opacity(0.75))
 
-            Text(searchText.isEmpty ? "No prompts yet" : "No matches found")
-                .font(.headline)
+            Text(searchText.isEmpty ? "No prompts yet" : "No matching prompts")
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.black)
 
-            Text(searchText.isEmpty ? "Create your first prompt to start copying faster." : "Try a different title or keyword.")
+            Text(searchText.isEmpty ? "Tap the plus button to save your first prompt." : "Try a different title or keyword.")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.black.opacity(0.65))
                 .multilineTextAlignment(.center)
 
             if searchText.isEmpty {
                 Button("Add Prompt") {
                     showAddPrompt = true
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.plain)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color.black)
+                .foregroundStyle(.white)
+                .clipShape(Capsule())
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
+        .padding(24)
         .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color.white.opacity(0.75))
         )
+    }
+
+    private func headerIcon(systemName: String, isActive: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(isActive ? .white : .black)
+                .frame(width: 36, height: 36)
+                .background(isActive ? Color.black : Color.white.opacity(0.92))
+                .clipShape(Circle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func promptCard(_ prompt: Prompt) -> some View {
+        let isExpanded = expandedPromptIDs.contains(prompt.id)
+
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Text(prompt.title)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.black)
+                    .lineLimit(1)
+
+                Spacer(minLength: 12)
+
+                cardIcon(systemName: copiedPromptID == prompt.id ? "checkmark" : "doc.on.doc") {
+                    copy(prompt)
+                }
+
+                cardIcon(systemName: "trash") {
+                    expandedPromptIDs.remove(prompt.id)
+                    store.deletePrompt(prompt)
+                }
+
+                cardIcon(systemName: "chevron.down", rotation: isExpanded ? 180 : 0) {
+                    toggleExpansion(for: prompt.id)
+                }
+            }
+
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 10) {
+                    Divider()
+
+                    Text(prompt.content)
+                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.78))
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(prompt.createdAt.formatted(date: .abbreviated, time: .shortened))
+                        .font(.caption)
+                        .foregroundStyle(.black.opacity(0.45))
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color.white)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color.black.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 6)
+    }
+
+    private func cardIcon(systemName: String, rotation: Double = 0, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(.black)
+                .frame(width: 28, height: 28)
+                .background(Color.black.opacity(0.06))
+                .clipShape(Circle())
+                .rotationEffect(.degrees(rotation))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func toggleExpansion(for promptID: Prompt.ID) {
+        if expandedPromptIDs.contains(promptID) {
+            expandedPromptIDs.remove(promptID)
+        } else {
+            expandedPromptIDs.insert(promptID)
+        }
     }
 
     private func copy(_ prompt: Prompt) {
         ClipboardManager.copy(prompt.content)
+        copiedPromptID = prompt.id
+
+        Task {
+            try? await Task.sleep(for: .seconds(1.2))
+            if copiedPromptID == prompt.id {
+                copiedPromptID = nil
+            }
+        }
     }
 }
 

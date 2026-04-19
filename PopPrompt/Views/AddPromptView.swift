@@ -16,22 +16,36 @@ struct AddPromptView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("New Prompt")
-                .font(.title3.weight(.semibold))
+                .font(.system(size: 22, weight: .bold, design: .rounded))
 
             TextField("Title", text: $title)
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(.plain)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Color.white)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(Color.black.opacity(0.08), lineWidth: 1)
+                )
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Content")
-                    .font(.subheadline.weight(.medium))
+                    .font(.subheadline.weight(.semibold))
 
                 TextEditor(text: $content)
-                    .font(.body)
+                    .font(.system(size: 14, weight: .regular, design: .rounded))
                     .frame(minHeight: 180)
-                    .padding(8)
+                    .padding(10)
                     .background(
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .stroke(Color.secondary.opacity(0.25))
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(Color.white)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.black.opacity(0.08), lineWidth: 1)
                     )
             }
 
@@ -46,11 +60,17 @@ struct AddPromptView: View {
                     onSave(title, content)
                     dismiss()
                 }
-                .buttonStyle(.borderedProminent)
                 .disabled(!canSave)
+                .buttonStyle(.plain)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 10)
+                .background(canSave ? Color.black : Color.black.opacity(0.2))
+                .foregroundStyle(.white)
+                .clipShape(Capsule())
             }
         }
         .padding(20)
         .frame(width: 420)
+        .background(Color(red: 0.95, green: 0.93, blue: 0.89))
     }
 }
