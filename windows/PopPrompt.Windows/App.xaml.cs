@@ -89,10 +89,48 @@ public partial class App : System.Windows.Application
 
         var cursorPosition = Forms.Cursor.Position;
         var screen = Forms.Screen.FromPoint(cursorPosition);
-        var area = screen.WorkingArea;
+        var workingArea = screen.WorkingArea;
+        var screenBounds = screen.Bounds;
 
-        _mainWindow.Left = area.Right - _mainWindow.Width - 20;
-        _mainWindow.Top = area.Bottom - _mainWindow.Height - 20;
+        var windowWidth = _mainWindow.Width;
+        var windowHeight = _mainWindow.Height;
+        const double margin = 12;
+
+        double proposedLeft;
+        double proposedTop;
+
+        if (workingArea.Left > screenBounds.Left)
+        {
+            // Taskbar is docked on the left, so open to its right.
+            proposedLeft = workingArea.Left + margin;
+            proposedTop = cursorPosition.Y - (windowHeight / 2);
+        }
+        else if (workingArea.Right < screenBounds.Right)
+        {
+            // Taskbar is docked on the right, so open to its left.
+            proposedLeft = workingArea.Right - windowWidth - margin;
+            proposedTop = cursorPosition.Y - (windowHeight / 2);
+        }
+        else if (workingArea.Top > screenBounds.Top)
+        {
+            // Taskbar is docked on the top, so open below it.
+            proposedLeft = cursorPosition.X - windowWidth + 32;
+            proposedTop = workingArea.Top + margin;
+        }
+        else
+        {
+            // Bottom taskbar or standard layout: open above the tray.
+            proposedLeft = cursorPosition.X - windowWidth + 32;
+            proposedTop = workingArea.Bottom - windowHeight - margin;
+        }
+
+        var minLeft = workingArea.Left + margin;
+        var maxLeft = workingArea.Right - windowWidth - margin;
+        var minTop = workingArea.Top + margin;
+        var maxTop = workingArea.Bottom - windowHeight - margin;
+
+        _mainWindow.Left = Math.Max(minLeft, Math.Min(proposedLeft, maxLeft));
+        _mainWindow.Top = Math.Max(minTop, Math.Min(proposedTop, maxTop));
     }
 
     private void OpenAddPromptWindow()
