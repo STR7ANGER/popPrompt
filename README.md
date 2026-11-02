@@ -21,7 +21,7 @@ windows/
 - Monochrome black-and-white UI
 - Add, search, copy, delete, and expand prompts
 - Local persistence on both platforms
-- GitHub Actions builds both `.dmg` and `.msi` installers on push
+- GitHub Actions builds `.dmg` and `.msi` installers and publishes them to GitHub Releases on version tags
 
 ## Run Locally
 
@@ -42,9 +42,13 @@ windows/
 - macOS stores prompts in `UserDefaults`.
 - Windows stores prompts in `%AppData%/PopPrompt/prompts.json`.
 
-## Build Artifact Automation
+## Releases
 
-The workflow at `.github/workflows/build-artifacts.yml` runs on every push and publishes:
+The workflow at `.github/workflows/build-artifacts.yml` builds both installers:
 
-- `PopPrompt-dmg`
-- `PopPrompt-msi`
+- **On a `v*` tag push** (e.g. `git tag v1.1.0 && git push origin v1.1.0`): builds `PopPrompt.dmg` and `PopPrompt.msi` and publishes them to a GitHub Release with auto-generated notes.
+- **On manual dispatch** (Actions tab → Build Installers → Run workflow): builds both and uploads them as workflow artifacts (`PopPrompt-dmg`, `PopPrompt-msi`) without creating a release.
+
+Plain pushes to branches do not trigger a build.
+
+Note: the macOS app is not code-signed or notarized, so Gatekeeper will warn on first launch (right-click → Open to bypass).
