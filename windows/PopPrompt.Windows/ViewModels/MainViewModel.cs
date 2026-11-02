@@ -15,6 +15,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
 {
     private readonly PromptStoreService _store;
     private readonly Action _requestOpenAddPrompt;
+    private readonly List<PromptGroup> _groups;
     private string _searchText = string.Empty;
     private bool _isSearchVisible;
     private bool _isAddDialogOpen;
@@ -24,7 +25,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
         _store = store;
         _requestOpenAddPrompt = requestOpenAddPrompt;
 
-        Prompts = new ObservableCollection<Prompt>(_store.Load());
+        _groups = _store.Load();
+        // Interim flat view over all groups until the groups screen lands.
+        Prompts = new ObservableCollection<Prompt>(_groups.SelectMany(group => group.Prompts));
         PromptsView = CollectionViewSource.GetDefaultView(Prompts);
         PromptsView.Filter = FilterPrompt;
 
@@ -128,12 +131,23 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     public void AddPrompt(string title, string content)
     {
-        Prompts.Insert(0, new Prompt
+        var group = _groups.FirstOrDefault();
+        if (group is null)
+        {
+            group = new PromptGroup { Name = PromptStoreService.MigratedGroupName };
+            _groups.Add(group);
+        }
+
+        var prompt = new Prompt
         {
             Title = title.Trim(),
             Content = content.Trim(),
             CreatedAt = DateTime.UtcNow
-        });
+        };
+
+        // Update the group before the collection so the CollectionChanged save sees it.
+        group.Prompts.Insert(0, prompt);
+        Prompts.Insert(0, prompt);
     }
 
     private void ToggleSearch()
@@ -152,6 +166,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             return;
         }
 
+        _groups.FirstOrDefault(group => group.Prompts.Contains(prompt))?.Prompts.Remove(prompt);
         Prompts.Remove(prompt);
     }
 
@@ -210,7 +225,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     private void SavePrompts()
     {
-        _store.Save(Prompts);
+        _store.Save(_groups);
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

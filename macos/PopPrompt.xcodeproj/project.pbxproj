@@ -6,6 +6,7 @@
 /* Begin PBXBuildFile section */
 		A00000000000000000000001 /* PopPromptApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000011 /* PopPromptApp.swift */; };
 		A00000000000000000000002 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000012 /* Prompt.swift */; };
+		A0000000000000000000002E /* PromptGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000002F /* PromptGroup.swift */; };
 		A00000000000000000000003 /* PromptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000013 /* PromptStore.swift */; };
 		A00000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000014 /* ContentView.swift */; };
 		A00000000000000000000007 /* AddPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000017 /* AddPromptView.swift */; };
@@ -18,6 +19,7 @@
 		A0000000000000000000000A /* PopPrompt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopPrompt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00000000000000000000011 /* PopPromptApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopPromptApp.swift; sourceTree = "<group>"; };
 		A00000000000000000000012 /* Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
+		A0000000000000000000002F /* PromptGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptGroup.swift; sourceTree = "<group>"; };
 		A00000000000000000000013 /* PromptStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptStore.swift; sourceTree = "<group>"; };
 		A00000000000000000000014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A00000000000000000000017 /* AddPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPromptView.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				A00000000000000000000012 /* Prompt.swift */,
+				A0000000000000000000002F /* PromptGroup.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -175,6 +178,7 @@
 				A00000000000000000000004 /* ContentView.swift in Sources */,
 				A00000000000000000000001 /* PopPromptApp.swift in Sources */,
 				A00000000000000000000002 /* Prompt.swift in Sources */,
+				A0000000000000000000002E /* PromptGroup.swift in Sources */,
 				A00000000000000000000003 /* PromptStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

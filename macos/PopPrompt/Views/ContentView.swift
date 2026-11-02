@@ -9,8 +9,9 @@ struct ContentView: View {
     @State private var showSearch = false
     @State private var copiedPromptID: Prompt.ID?
 
+    // Interim flat view over all groups until the groups screen lands.
     private var filteredPrompts: [Prompt] {
-        store.filteredPrompts(matching: searchText)
+        store.searchAllPrompts(matching: searchText).map(\.prompt)
     }
 
     var body: some View {
@@ -53,7 +54,8 @@ struct ContentView: View {
         .background(Color.black)
         .sheet(isPresented: $showAddPrompt) {
             AddPromptView { title, content in
-                store.addPrompt(title: title, content: content)
+                let groupID = store.groups.first?.id ?? store.addGroup(name: PromptStore.migratedGroupName).id
+                store.addPrompt(title: title, content: content, to: groupID)
             }
         }
         .animation(.smooth(duration: 0.2), value: filteredPrompts)
@@ -157,7 +159,7 @@ struct ContentView: View {
 
                 cardIcon(systemName: "trash") {
                     expandedPromptIDs.remove(prompt.id)
-                    store.deletePrompt(prompt)
+                    store.deletePrompt(prompt.id)
                 }
 
                 cardIcon(systemName: "chevron.down", rotation: isExpanded ? 180 : 0) {

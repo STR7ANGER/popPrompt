@@ -6,12 +6,19 @@ namespace PopPrompt.Windows.Services;
 
 public sealed class PromptStoreService
 {
+    public const string MigratedGroupName = "My Prompts";
+
+    private const string LegacyWelcomeTitle = "Welcome Prompt";
+    private const string LegacyWelcomeContent = "Store your favorite prompts here, then copy them into any app with one click.";
+
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         WriteIndented = true
     };
 
-    private readonly string _filePath;
+    private readonly string _groupsFilePath;
+    // v1.0 stored a flat prompt list here. It is read once for migration and left untouched.
+    private readonly string _legacyPromptsFilePath;
 
     public PromptStoreService()
     {
@@ -20,57 +27,78 @@ public sealed class PromptStoreService
             "PopPrompt"
         );
 
-        _filePath = Path.Combine(appDataFolder, "prompts.json");
+        _groupsFilePath = Path.Combine(appDataFolder, "groups.json");
+        _legacyPromptsFilePath = Path.Combine(appDataFolder, "prompts.json");
     }
 
-    public IReadOnlyList<Prompt> Load()
+    public List<PromptGroup> Load()
     {
-        try
+        if (File.Exists(_groupsFilePath))
         {
-            if (!File.Exists(_filePath))
+            try
             {
-                return DefaultPrompts();
+                var json = File.ReadAllText(_groupsFilePath);
+                return JsonSerializer.Deserialize<List<PromptGroup>>(json, SerializerOptions) ?? [];
             }
-
-            var json = File.ReadAllText(_filePath);
-            var prompts = JsonSerializer.Deserialize<List<Prompt>>(json, SerializerOptions);
-            if (prompts is null)
+            catch
             {
-                return DefaultPrompts();
+                return [];
             }
+        }
 
-            return prompts
-                .OrderByDescending(prompt => prompt.CreatedAt)
-                .ToList();
-        }
-        catch
-        {
-            return DefaultPrompts();
-        }
+        var migrated = MigrateLegacyPrompts();
+        Save(migrated);
+        return migrated;
     }
 
-    public void Save(IEnumerable<Prompt> prompts)
+    public void Save(IEnumerable<PromptGroup> groups)
     {
-        var directory = Path.GetDirectoryName(_filePath);
+        var directory = Path.GetDirectoryName(_groupsFilePath);
         if (!string.IsNullOrEmpty(directory))
         {
             Directory.CreateDirectory(directory);
         }
 
-        var json = JsonSerializer.Serialize(prompts, SerializerOptions);
-        File.WriteAllText(_filePath, json);
+        // Write to a temp file first so a crash mid-write can't corrupt the saved groups.
+        var tempPath = _groupsFilePath + ".tmp";
+        var json = JsonSerializer.Serialize(groups, SerializerOptions);
+        File.WriteAllText(tempPath, json);
+        File.Move(tempPath, _groupsFilePath, overwrite: true);
     }
 
-    private static IReadOnlyList<Prompt> DefaultPrompts()
+    private List<PromptGroup> MigrateLegacyPrompts()
     {
-        return
-        [
-            new Prompt
+        try
+        {
+            if (!File.Exists(_legacyPromptsFilePath))
             {
-                Title = "Welcome Prompt",
-                Content = "Store your favorite prompts here, then copy them into any app with one click.",
-                CreatedAt = DateTime.UtcNow
+                return [];
             }
-        ];
+
+            var json = File.ReadAllText(_legacyPromptsFilePath);
+            var legacyPrompts = JsonSerializer.Deserialize<List<Prompt>>(json, SerializerOptions) ?? [];
+            var keptPrompts = legacyPrompts
+                .Where(prompt => !(prompt.Title == LegacyWelcomeTitle && prompt.Content == LegacyWelcomeContent))
+                .OrderByDescending(prompt => prompt.CreatedAt)
+                .ToList();
+
+            if (keptPrompts.Count == 0)
+            {
+                return [];
+            }
+
+            return
+            [
+                new PromptGroup
+                {
+                    Name = MigratedGroupName,
+                    Prompts = keptPrompts
+                }
+            ];
+        }
+        catch
+        {
+            return [];
+        }
     }
 }
