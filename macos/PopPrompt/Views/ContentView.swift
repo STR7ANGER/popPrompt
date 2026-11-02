@@ -3,228 +3,224 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject private var store: PromptStore
 
+    @State private var selectedGroupID: PromptGroup.ID?
     @State private var searchText = ""
-    @State private var expandedPromptIDs: Set<Prompt.ID> = []
-    @State private var showAddPrompt = false
     @State private var showSearch = false
-    @State private var copiedPromptID: Prompt.ID?
+    @State private var activeSheet: ActiveSheet?
+    @State private var groupPendingDeletion: PromptGroup?
 
-    // Interim flat view over all groups until the groups screen lands.
-    private var filteredPrompts: [Prompt] {
-        store.searchAllPrompts(matching: searchText).map(\.prompt)
+    private enum ActiveSheet: Identifiable {
+        case newGroup
+        case renameGroup(PromptGroup)
+        case newPrompt(PromptGroup.ID)
+
+        var id: String {
+            switch self {
+            case .newGroup: "new-group"
+            case .renameGroup(let group): "rename-\(group.id)"
+            case .newPrompt(let groupID): "new-prompt-\(groupID)"
+            }
+        }
+    }
+
+    private var selectedGroup: PromptGroup? {
+        store.group(withID: selectedGroupID)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            header
+        ZStack {
+            VStack(alignment: .leading, spacing: 14) {
+                header
 
-            if showSearch {
-                TextField("Search prompts", text: $searchText)
-                    .textFieldStyle(.plain)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(Color.black)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(Color.white.opacity(0.14), lineWidth: 1)
-                    )
-                    .foregroundStyle(.white)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-
-            if filteredPrompts.isEmpty {
-                emptyState
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(filteredPrompts) { prompt in
-                            promptCard(prompt)
-                        }
-                    }
-                    .padding(.bottom, 4)
+                if showSearch {
+                    searchField
+                        .transition(.move(edge: .top).combined(with: .opacity))
                 }
-                .scrollIndicators(.hidden)
+
+                ZStack {
+                    if let group = selectedGroup {
+                        GroupDetailView(group: group, searchText: searchText) {
+                            activeSheet = .newPrompt(group.id)
+                        }
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                    } else {
+                        GroupListView(
+                            searchText: searchText,
+                            onOpen: open,
+                            onCreate: { activeSheet = .newGroup },
+                            onRename: { activeSheet = .renameGroup($0) },
+                            onDelete: { group in
+                                withAnimation(.panel) { groupPendingDeletion = group }
+                            }
+                        )
+                        .transition(.move(edge: .leading).combined(with: .opacity))
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+            }
+            .padding(16)
+
+            if let group = groupPendingDeletion {
+                deleteConfirmation(for: group)
+                    .transition(.opacity)
             }
         }
-        .padding(16)
         .frame(width: 430, height: 560)
         .background(Color.black)
-        .sheet(isPresented: $showAddPrompt) {
-            AddPromptView { title, content in
-                let groupID = store.groups.first?.id ?? store.addGroup(name: PromptStore.migratedGroupName).id
-                store.addPrompt(title: title, content: content, to: groupID)
-            }
+        .sheet(item: $activeSheet) { sheet in
+            sheetContent(sheet)
         }
-        .animation(.smooth(duration: 0.2), value: filteredPrompts)
-        .animation(.smooth(duration: 0.2), value: expandedPromptIDs)
-        .animation(.smooth(duration: 0.2), value: showSearch)
+        .animation(.panel, value: showSearch)
     }
+
+    // MARK: - Header
 
     private var header: some View {
         HStack(spacing: 12) {
-            Text("PopPrompt")
+            if selectedGroup != nil {
+                HeaderIconButton(systemName: "chevron.left", action: goBack)
+                    .keyboardShortcut(.cancelAction)
+                    .transition(.move(edge: .leading).combined(with: .opacity))
+            }
+
+            Text(selectedGroup?.name ?? "PopPrompt")
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(.black)
+                .lineLimit(1)
                 .padding(.horizontal, 13)
                 .padding(.vertical, 9)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                .id(selectedGroupID)
+                .transition(.opacity)
 
-            Spacer()
+            Spacer(minLength: 0)
 
-            headerIcon(systemName: "magnifyingglass", isActive: showSearch) {
-                withAnimation {
-                    showSearch.toggle()
-                    if !showSearch {
-                        searchText = ""
-                    }
+            HeaderIconButton(systemName: "magnifyingglass", isActive: showSearch) {
+                showSearch.toggle()
+                if !showSearch {
+                    searchText = ""
                 }
             }
 
-            headerIcon(systemName: "plus") {
-                showAddPrompt = true
-            }
-        }
-    }
-
-    private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "rectangle.stack.badge.plus")
-                .font(.system(size: 32, weight: .medium))
-                .foregroundStyle(.white.opacity(0.82))
-
-            Text(searchText.isEmpty ? "No prompts yet" : "No matching prompts")
-                .font(.headline.weight(.semibold))
-                .foregroundStyle(.white)
-
-            Text(searchText.isEmpty ? "Tap the plus button to save your first prompt." : "Try a different title or keyword.")
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.62))
-                .multilineTextAlignment(.center)
-
-            if searchText.isEmpty {
-                Button("Add Prompt") {
-                    showAddPrompt = true
+            HeaderIconButton(systemName: "plus") {
+                if let selectedGroupID {
+                    activeSheet = .newPrompt(selectedGroupID)
+                } else {
+                    activeSheet = .newGroup
                 }
-                .buttonStyle(.plain)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(Color.white)
-                .foregroundStyle(.black)
-                .clipShape(Capsule())
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(24)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color.white.opacity(0.06))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
     }
 
-    private func headerIcon(systemName: String, isActive: Bool = false, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(isActive ? .black : .white)
-                .frame(width: 36, height: 36)
-                .background(isActive ? Color.white : Color.white.opacity(0.08))
-                .clipShape(Circle())
+    private var searchField: some View {
+        TextField(selectedGroup.map { "Search in \($0.name)" } ?? "Search all prompts", text: $searchText)
+            .textFieldStyle(.plain)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color.black)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Color.white.opacity(0.14), lineWidth: 1)
+            )
+            .foregroundStyle(.white)
+    }
+
+    // MARK: - Navigation
+
+    private func open(_ group: PromptGroup) {
+        withAnimation(.panel) {
+            resetSearch()
+            selectedGroupID = group.id
         }
-        .buttonStyle(.plain)
     }
 
-    private func promptCard(_ prompt: Prompt) -> some View {
-        let isExpanded = expandedPromptIDs.contains(prompt.id)
+    private func goBack() {
+        withAnimation(.panel) {
+            resetSearch()
+            selectedGroupID = nil
+        }
+    }
 
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
-                Text(prompt.title)
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+    private func resetSearch() {
+        showSearch = false
+        searchText = ""
+    }
+
+    // MARK: - Sheets
+
+    @ViewBuilder
+    private func sheetContent(_ sheet: ActiveSheet) -> some View {
+        switch sheet {
+        case .newGroup:
+            GroupNameView(heading: "New Group", saveTitle: "Create") { name in
+                open(store.addGroup(name: name))
+            }
+        case .renameGroup(let group):
+            GroupNameView(heading: "Rename Group", saveTitle: "Save", initialName: group.name) { name in
+                store.renameGroup(group.id, to: name)
+            }
+        case .newPrompt(let groupID):
+            AddPromptView { title, content in
+                store.addPrompt(title: title, content: content, to: groupID)
+            }
+        }
+    }
+
+    // MARK: - Delete confirmation
+
+    private func deleteConfirmation(for group: PromptGroup) -> some View {
+        let count = group.prompts.count
+        let message = count == 0
+            ? "This group is empty."
+            : "Its \(count == 1 ? "1 prompt" : "\(count) prompts") will be deleted too."
+
+        return ZStack {
+            Color.black.opacity(0.6)
+                .onTapGesture(perform: cancelDeletion)
+
+            VStack(spacing: 14) {
+                Text("Delete \u{201C}\(group.name)\u{201D}?")
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
-                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
 
-                Spacer(minLength: 12)
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.62))
+                    .multilineTextAlignment(.center)
 
-                cardIcon(systemName: copiedPromptID == prompt.id ? "checkmark" : "doc.on.doc") {
-                    copy(prompt)
-                }
+                HStack(spacing: 10) {
+                    Button("Cancel", action: cancelDeletion)
+                        .buttonStyle(PillButtonStyle())
+                        .keyboardShortcut(.cancelAction)
 
-                cardIcon(systemName: "trash") {
-                    expandedPromptIDs.remove(prompt.id)
-                    store.deletePrompt(prompt.id)
-                }
-
-                cardIcon(systemName: "chevron.down", rotation: isExpanded ? 180 : 0) {
-                    toggleExpansion(for: prompt.id)
+                    Button("Delete") {
+                        withAnimation(.panel) {
+                            store.deleteGroup(group.id)
+                            groupPendingDeletion = nil
+                        }
+                    }
+                    .buttonStyle(PillButtonStyle(prominent: true))
                 }
             }
-
-            if isExpanded {
-                VStack(alignment: .leading, spacing: 10) {
-                    Divider()
-
-                    Text(prompt.content)
-                        .font(.system(size: 13, weight: .regular, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.78))
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Text(prompt.createdAt.formatted(date: .abbreviated, time: .shortened))
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.45))
-                }
-                .transition(.move(edge: .top).combined(with: .opacity))
-            }
-        }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.white.opacity(0.06))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
-        .shadow(color: Color.white.opacity(0.03), radius: 2, x: 0, y: 0)
-    }
-
-    private func cardIcon(systemName: String, rotation: Double = 0, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 28, height: 28)
-                .background(Color.white.opacity(0.08))
-                .clipShape(Circle())
-                .rotationEffect(.degrees(rotation))
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func toggleExpansion(for promptID: Prompt.ID) {
-        if expandedPromptIDs.contains(promptID) {
-            expandedPromptIDs.remove(promptID)
-        } else {
-            expandedPromptIDs.insert(promptID)
+            .padding(22)
+            .background(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(Color.black)
+            )
+            .cardSurface(cornerRadius: 24)
+            .padding(32)
         }
     }
 
-    private func copy(_ prompt: Prompt) {
-        ClipboardManager.copy(prompt.content)
-        copiedPromptID = prompt.id
-
-        Task {
-            try? await Task.sleep(for: .seconds(1.2))
-            if copiedPromptID == prompt.id {
-                copiedPromptID = nil
-            }
+    private func cancelDeletion() {
+        withAnimation(.panel) {
+            groupPendingDeletion = nil
         }
     }
 }
