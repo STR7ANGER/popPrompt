@@ -1,12 +1,38 @@
 import SwiftUI
 
-struct AddPromptView: View {
+/// Sheet for adding a new prompt or editing an existing one, including which group it lives in.
+struct PromptEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var title = ""
-    @State private var content = ""
+    let heading: String
+    let subtitle: String
+    let saveTitle: String
+    let groups: [PromptGroup]
+    let onSave: (_ title: String, _ content: String, _ groupID: PromptGroup.ID) -> Void
 
-    let onSave: (String, String) -> Void
+    @State private var title: String
+    @State private var content: String
+    @State private var groupID: PromptGroup.ID
+
+    init(
+        heading: String,
+        subtitle: String,
+        saveTitle: String,
+        groups: [PromptGroup],
+        groupID: PromptGroup.ID,
+        initialTitle: String = "",
+        initialContent: String = "",
+        onSave: @escaping (_ title: String, _ content: String, _ groupID: PromptGroup.ID) -> Void
+    ) {
+        self.heading = heading
+        self.subtitle = subtitle
+        self.saveTitle = saveTitle
+        self.groups = groups
+        self.onSave = onSave
+        _title = State(initialValue: initialTitle)
+        _content = State(initialValue: initialContent)
+        _groupID = State(initialValue: groupID)
+    }
 
     private var canSave: Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -20,11 +46,11 @@ struct AddPromptView: View {
             VStack(alignment: .leading, spacing: 18) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("New Prompt")
+                        Text(heading)
                             .font(.system(size: 22, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
 
-                        Text("Save a reusable prompt in a clean monochrome workspace.")
+                        Text(subtitle)
                             .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.6))
                     }
@@ -34,12 +60,7 @@ struct AddPromptView: View {
                     Button("Close") {
                         dismiss()
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Color.white.opacity(0.08))
-                    .foregroundStyle(.white)
-                    .clipShape(Capsule())
+                    .buttonStyle(PillButtonStyle(compact: true))
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -49,14 +70,7 @@ struct AddPromptView: View {
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .fill(Color.white.opacity(0.06))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                        )
+                        .cardSurface(cornerRadius: 16)
                         .foregroundStyle(.white)
                 }
 
@@ -65,11 +79,8 @@ struct AddPromptView: View {
 
                     ZStack(alignment: .topLeading) {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(Color.white.opacity(0.06))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                            )
+                            .fill(Color.clear)
+                            .cardSurface(cornerRadius: 18)
 
                         if content.isEmpty {
                             Text("Paste or write the full prompt here...")
@@ -84,7 +95,14 @@ struct AddPromptView: View {
                             .foregroundStyle(.white)
                             .scrollContentBackground(.hidden)
                             .padding(10)
-                            .frame(minHeight: 220, maxHeight: 220)
+                            .frame(minHeight: 190, maxHeight: 190)
+                    }
+                }
+
+                if groups.count > 1 {
+                    VStack(alignment: .leading, spacing: 10) {
+                        fieldLabel("Group")
+                        groupPicker
                     }
                 }
 
@@ -94,29 +112,37 @@ struct AddPromptView: View {
                     Button("Cancel") {
                         dismiss()
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(Color.white.opacity(0.08))
-                    .foregroundStyle(.white)
-                    .clipShape(Capsule())
+                    .buttonStyle(PillButtonStyle())
+                    .keyboardShortcut(.cancelAction)
 
-                    Button("Save") {
-                        onSave(title, content)
+                    Button(saveTitle) {
+                        onSave(title, content, groupID)
                         dismiss()
                     }
+                    .buttonStyle(PillButtonStyle(prominent: true))
+                    .keyboardShortcut(.return, modifiers: .command)
                     .disabled(!canSave)
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .background(canSave ? Color.white : Color.white.opacity(0.18))
-                    .foregroundStyle(.black)
-                    .clipShape(Capsule())
                 }
             }
             .padding(24)
         }
-        .frame(width: 460, height: 470)
+        .frame(width: 460, height: groups.count > 1 ? 540 : 470)
+    }
+
+    private var groupPicker: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(groups) { group in
+                    let isSelected = group.id == groupID
+
+                    Button(group.name) {
+                        groupID = group.id
+                    }
+                    .buttonStyle(PillButtonStyle(prominent: isSelected, compact: true))
+                }
+            }
+        }
+        .scrollIndicators(.hidden)
     }
 
     private func fieldLabel(_ title: String) -> some View {

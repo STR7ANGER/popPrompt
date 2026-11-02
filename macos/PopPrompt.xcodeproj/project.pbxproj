@@ -14,7 +14,7 @@
 		A0000000000000000000002E /* PromptGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000002F /* PromptGroup.swift */; };
 		A00000000000000000000003 /* PromptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000013 /* PromptStore.swift */; };
 		A00000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000014 /* ContentView.swift */; };
-		A00000000000000000000007 /* AddPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000017 /* AddPromptView.swift */; };
+		A00000000000000000000007 /* PromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000017 /* PromptEditorView.swift */; };
 		A00000000000000000000008 /* ClipboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000018 /* ClipboardManager.swift */; };
 		A00000000000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000019 /* Assets.xcassets */; };
 		A0000000000000000000000B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000001E /* AppDelegate.swift */; };
@@ -32,7 +32,7 @@
 		A0000000000000000000002F /* PromptGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptGroup.swift; sourceTree = "<group>"; };
 		A00000000000000000000013 /* PromptStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptStore.swift; sourceTree = "<group>"; };
 		A00000000000000000000014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A00000000000000000000017 /* AddPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPromptView.swift; sourceTree = "<group>"; };
+		A00000000000000000000017 /* PromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptEditorView.swift; sourceTree = "<group>"; };
 		A00000000000000000000018 /* ClipboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardManager.swift; sourceTree = "<group>"; };
 		A00000000000000000000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A0000000000000000000001E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 				A00000000000000000000035 /* GroupListView.swift */,
 				A00000000000000000000037 /* GroupDetailView.swift */,
 				A00000000000000000000039 /* GroupNameView.swift */,
-				A00000000000000000000017 /* AddPromptView.swift */,
+				A00000000000000000000017 /* PromptEditorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -187,7 +187,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A00000000000000000000007 /* AddPromptView.swift in Sources */,
+				A00000000000000000000007 /* PromptEditorView.swift in Sources */,
 				A0000000000000000000000B /* AppDelegate.swift in Sources */,
 				A00000000000000000000008 /* ClipboardManager.swift in Sources */,
 				A00000000000000000000004 /* ContentView.swift in Sources */,

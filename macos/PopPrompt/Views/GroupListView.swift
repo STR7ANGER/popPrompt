@@ -9,6 +9,7 @@ struct GroupListView: View {
     let onCreate: () -> Void
     let onRename: (PromptGroup) -> Void
     let onDelete: (PromptGroup) -> Void
+    let onEditPrompt: (Prompt) -> Void
 
     private var isSearching: Bool {
         !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -57,9 +58,12 @@ struct GroupListView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(results, id: \.prompt.id) { result in
-                        PromptCardView(prompt: result.prompt, groupName: result.group.name) {
-                            store.deletePrompt(result.prompt.id)
-                        }
+                        PromptCardView(
+                            prompt: result.prompt,
+                            groupName: result.group.name,
+                            onEdit: { onEditPrompt(result.prompt) },
+                            onDelete: { store.deletePrompt(result.prompt.id) }
+                        )
                     }
                 }
                 .padding(.bottom, 4)

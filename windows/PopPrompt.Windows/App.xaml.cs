@@ -18,7 +18,7 @@ public partial class App : System.Windows.Application
         base.OnStartup(e);
 
         var store = new PromptStoreService();
-        _mainViewModel = new MainViewModel(store, RequestNewPrompt, RequestGroupName);
+        _mainViewModel = new MainViewModel(store, RequestPrompt, RequestGroupName);
         _mainWindow = new MainWindow(_mainViewModel);
         _mainWindow.Hide();
 
@@ -98,10 +98,12 @@ public partial class App : System.Windows.Application
         _mainWindow.Top = workingArea.Top + ((workingArea.Height - windowHeight) / 2);
     }
 
-    private (string Title, string Content)? RequestNewPrompt()
+    private PromptEditorResult? RequestPrompt(PromptEditorRequest request)
     {
-        var dialog = new AddPromptWindow();
-        return ShowDialog(dialog) ? (dialog.PromptTitle, dialog.PromptContent) : null;
+        var dialog = new PromptEditorWindow(request);
+        return ShowDialog(dialog) && dialog.SelectedGroup is { } group
+            ? new PromptEditorResult(dialog.PromptTitle, dialog.PromptContent, group)
+            : null;
     }
 
     private string? RequestGroupName(string heading, string saveLabel, string initialName)

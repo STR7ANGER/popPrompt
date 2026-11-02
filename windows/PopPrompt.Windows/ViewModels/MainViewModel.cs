@@ -29,7 +29,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
     ];
 
     private readonly PromptStoreService _store;
-    private readonly Func<(string Title, string Content)?> _requestNewPrompt;
+    private readonly Func<PromptEditorRequest, PromptEditorResult?> _requestPrompt;
     private readonly Func<string, string, string, string?> _requestGroupName;
     private string _searchText = string.Empty;
     private bool _isSearchVisible;
@@ -37,15 +37,15 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private PromptGroup? _selectedGroup;
     private PromptGroup? _groupPendingDeletion;
 
-    /// <param name="requestNewPrompt">Shows the add-prompt dialog; returns null if cancelled.</param>
+    /// <param name="requestPrompt">Shows the prompt editor dialog; returns null if cancelled.</param>
     /// <param name="requestGroupName">Shows the group name dialog (heading, save label, initial name); returns null if cancelled.</param>
     public MainViewModel(
         PromptStoreService store,
-        Func<(string Title, string Content)?> requestNewPrompt,
+        Func<PromptEditorRequest, PromptEditorResult?> requestPrompt,
         Func<string, string, string, string?> requestGroupName)
     {
         _store = store;
-        _requestNewPrompt = requestNewPrompt;
+        _requestPrompt = requestPrompt;
         _requestGroupName = requestGroupName;
 
         Groups = new ObservableCollection<PromptGroup>(_store.Load());
@@ -68,6 +68,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         DeleteGroupCommand = new RelayCommand<PromptGroup>(RequestDeleteGroup);
         ConfirmDeleteGroupCommand = new RelayCommand(ConfirmDeleteGroup);
         CancelDeleteGroupCommand = new RelayCommand(CancelDeleteGroup);
+        EditPromptCommand = new RelayCommand<Prompt>(EditPrompt);
         DeletePromptCommand = new RelayCommand<Prompt>(DeletePrompt);
         CopyPromptCommand = new RelayCommand<Prompt>(CopyPrompt);
         ToggleExpandCommand = new RelayCommand<Prompt>(ToggleExpand);
@@ -102,6 +103,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
     public ICommand ConfirmDeleteGroupCommand { get; }
 
     public ICommand CancelDeleteGroupCommand { get; }
+
+    public ICommand EditPromptCommand { get; }
 
     public ICommand DeletePromptCommand { get; }
 
@@ -387,21 +390,74 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     private void AddPrompt(PromptGroup group)
     {
-        if (_requestNewPrompt() is not { } result)
+        var result = _requestPrompt(new PromptEditorRequest(
+            "New Prompt",
+            "Save a reusable prompt in a clean monochrome workspace.",
+            "Save",
+            string.Empty,
+            string.Empty,
+            Groups,
+            group));
+
+        if (result is null)
         {
             return;
         }
 
-        group.Prompts.Insert(0, new Prompt
+        result.Group.Prompts.Insert(0, new Prompt
         {
             Title = result.Title.Trim(),
             Content = result.Content.Trim(),
             CreatedAt = DateTime.UtcNow,
-            GroupName = group.Name
+            GroupName = result.Group.Name
         });
 
         Save();
+        RefreshGroups();
         RefreshScreen();
+    }
+
+    private void EditPrompt(Prompt? prompt)
+    {
+        if (prompt is null)
+        {
+            return;
+        }
+
+        var currentGroup = Groups.FirstOrDefault(group => group.Prompts.Contains(prompt));
+        if (currentGroup is null)
+        {
+            return;
+        }
+
+        var result = _requestPrompt(new PromptEditorRequest(
+            "Edit Prompt",
+            "Update the prompt or move it to another group.",
+            "Save Changes",
+            prompt.Title,
+            prompt.Content,
+            Groups,
+            currentGroup));
+
+        if (result is null)
+        {
+            return;
+        }
+
+        prompt.Title = result.Title.Trim();
+        prompt.Content = result.Content.Trim();
+
+        if (result.Group != currentGroup)
+        {
+            currentGroup.Prompts.Remove(prompt);
+            result.Group.Prompts.Insert(0, prompt);
+            prompt.GroupName = result.Group.Name;
+        }
+
+        Save();
+        RefreshGroups();
+        RefreshScreen();
+        RefreshPromptItems();
     }
 
     private void DeletePrompt(Prompt? prompt)

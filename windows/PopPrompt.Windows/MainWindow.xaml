@@ -311,13 +311,6 @@
                                                     </Button>
 
                                                     <Button Style="{StaticResource CircleButtonStyle}"
-                                                            Command="{Binding DataContext.DeletePromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}"
-                                                            Margin="0,0,8,0">
-                                                        <TextBlock Text="✕" Style="{StaticResource CardGlyphStyle}" />
-                                                    </Button>
-
-                                                    <Button Style="{StaticResource CircleButtonStyle}"
                                                             Command="{Binding DataContext.ToggleExpandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                             CommandParameter="{Binding}">
                                                         <TextBlock Text="{Binding IsExpanded, Converter={StaticResource ExpandGlyphConverter}}"
@@ -347,10 +340,24 @@
                                                            Foreground="#C7FFFFFF"
                                                            FontSize="13"
                                                            TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding CreatedAtDisplay}"
-                                                           Foreground="#73FFFFFF"
-                                                           FontSize="11"
-                                                           Margin="0,10,0,0" />
+                                                <DockPanel Margin="0,10,0,0" LastChildFill="False">
+                                                    <TextBlock Text="{Binding CreatedAtDisplay}"
+                                                               Foreground="#73FFFFFF"
+                                                               FontSize="11"
+                                                               VerticalAlignment="Center"
+                                                               DockPanel.Dock="Left" />
+                                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                                        <Button Style="{StaticResource PillButtonStyle}"
+                                                                Content="Edit"
+                                                                Margin="0,0,8,0"
+                                                                Command="{Binding DataContext.EditPromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                CommandParameter="{Binding}" />
+                                                        <Button Style="{StaticResource PillButtonStyle}"
+                                                                Content="Delete"
+                                                                Command="{Binding DataContext.DeletePromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                CommandParameter="{Binding}" />
+                                                    </StackPanel>
+                                                </DockPanel>
                                             </StackPanel>
                                         </StackPanel>
                                     </Border>

@@ -13,12 +13,14 @@ struct ContentView: View {
         case newGroup
         case renameGroup(PromptGroup)
         case newPrompt(PromptGroup.ID)
+        case editPrompt(Prompt)
 
         var id: String {
             switch self {
             case .newGroup: "new-group"
             case .renameGroup(let group): "rename-\(group.id)"
             case .newPrompt(let groupID): "new-prompt-\(groupID)"
+            case .editPrompt(let prompt): "edit-prompt-\(prompt.id)"
             }
         }
     }
@@ -39,9 +41,12 @@ struct ContentView: View {
 
                 ZStack {
                     if let group = selectedGroup {
-                        GroupDetailView(group: group, searchText: searchText) {
-                            activeSheet = .newPrompt(group.id)
-                        }
+                        GroupDetailView(
+                            group: group,
+                            searchText: searchText,
+                            onAddPrompt: { activeSheet = .newPrompt(group.id) },
+                            onEditPrompt: { activeSheet = .editPrompt($0) }
+                        )
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                     } else {
                         GroupListView(
@@ -51,7 +56,8 @@ struct ContentView: View {
                             onRename: { activeSheet = .renameGroup($0) },
                             onDelete: { group in
                                 withAnimation(.panel) { groupPendingDeletion = group }
-                            }
+                            },
+                            onEditPrompt: { activeSheet = .editPrompt($0) }
                         )
                         .transition(.move(edge: .leading).combined(with: .opacity))
                     }
@@ -165,8 +171,28 @@ struct ContentView: View {
                 store.renameGroup(group.id, to: name)
             }
         case .newPrompt(let groupID):
-            AddPromptView { title, content in
+            PromptEditorView(
+                heading: "New Prompt",
+                subtitle: "Save a reusable prompt in a clean monochrome workspace.",
+                saveTitle: "Save",
+                groups: store.groups,
+                groupID: groupID
+            ) { title, content, groupID in
                 store.addPrompt(title: title, content: content, to: groupID)
+            }
+        case .editPrompt(let prompt):
+            if let groupID = store.groupID(containing: prompt.id) {
+                PromptEditorView(
+                    heading: "Edit Prompt",
+                    subtitle: "Update the prompt or move it to another group.",
+                    saveTitle: "Save Changes",
+                    groups: store.groups,
+                    groupID: groupID,
+                    initialTitle: prompt.title,
+                    initialContent: prompt.content
+                ) { title, content, groupID in
+                    store.updatePrompt(prompt.id, title: title, content: content, groupID: groupID)
+                }
             }
         }
     }

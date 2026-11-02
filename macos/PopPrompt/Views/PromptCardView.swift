@@ -4,6 +4,7 @@ struct PromptCardView: View {
     let prompt: Prompt
     /// Shown under the title in cross-group search results.
     var groupName: String?
+    let onEdit: () -> Void
     let onDelete: () -> Void
 
     @State private var isExpanded = false
@@ -30,8 +31,6 @@ struct PromptCardView: View {
 
                 CardIconButton(systemName: isCopied ? "checkmark" : "doc.on.doc", action: copy)
 
-                CardIconButton(systemName: "trash", action: onDelete)
-
                 CardIconButton(systemName: "chevron.down", rotation: isExpanded ? 180 : 0) {
                     withAnimation(.panel) {
                         isExpanded.toggle()
@@ -49,9 +48,19 @@ struct PromptCardView: View {
                         .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text(prompt.createdAt.formatted(date: .abbreviated, time: .shortened))
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.45))
+                    HStack(spacing: 8) {
+                        Text(prompt.createdAt.formatted(date: .abbreviated, time: .shortened))
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.45))
+
+                        Spacer()
+
+                        Button("Edit", action: onEdit)
+                            .buttonStyle(PillButtonStyle(compact: true))
+
+                        Button("Delete", action: onDelete)
+                            .buttonStyle(PillButtonStyle(compact: true))
+                    }
                 }
                 .transition(.move(edge: .top).combined(with: .opacity))
             }

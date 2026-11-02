@@ -7,6 +7,7 @@ struct GroupDetailView: View {
     let group: PromptGroup
     let searchText: String
     let onAddPrompt: () -> Void
+    let onEditPrompt: (Prompt) -> Void
 
     var body: some View {
         let prompts = store.prompts(in: group.id, matching: searchText)
@@ -31,9 +32,11 @@ struct GroupDetailView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(prompts) { prompt in
-                        PromptCardView(prompt: prompt) {
-                            store.deletePrompt(prompt.id)
-                        }
+                        PromptCardView(
+                            prompt: prompt,
+                            onEdit: { onEditPrompt(prompt) },
+                            onDelete: { store.deletePrompt(prompt.id) }
+                        )
                     }
                 }
                 .padding(.bottom, 4)
