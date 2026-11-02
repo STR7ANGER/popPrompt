@@ -10,5 +10,11 @@
     <RootNamespace>PopPrompt.Windows</RootNamespace>
     <PlatformTarget>x64</PlatformTarget>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+    <Version>1.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Starter groups shared with the macOS app. -->
+    <EmbeddedResource Include="..\..\shared\default-groups.json" LogicalName="PopPrompt.Windows.default-groups.json" />
+  </ItemGroup>
 </Project>

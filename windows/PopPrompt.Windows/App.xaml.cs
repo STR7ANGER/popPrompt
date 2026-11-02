@@ -18,7 +18,7 @@ public partial class App : System.Windows.Application
         base.OnStartup(e);
 
         var store = new PromptStoreService();
-        _mainViewModel = new MainViewModel(store, OpenAddPromptWindow);
+        _mainViewModel = new MainViewModel(store, RequestPrompt, RequestGroupName);
         _mainWindow = new MainWindow(_mainViewModel);
         _mainWindow.Hide();
 
@@ -98,31 +98,39 @@ public partial class App : System.Windows.Application
         _mainWindow.Top = workingArea.Top + ((workingArea.Height - windowHeight) / 2);
     }
 
-    private void OpenAddPromptWindow()
+    private PromptEditorResult? RequestPrompt(PromptEditorRequest request)
+    {
+        var dialog = new PromptEditorWindow(request);
+        return ShowDialog(dialog) && dialog.SelectedGroup is { } group
+            ? new PromptEditorResult(dialog.PromptTitle, dialog.PromptContent, group)
+            : null;
+    }
+
+    private string? RequestGroupName(string heading, string saveLabel, string initialName)
+    {
+        var dialog = new GroupNameWindow(heading, saveLabel, initialName);
+        return ShowDialog(dialog) ? dialog.GroupName : null;
+    }
+
+    private bool ShowDialog(Window dialog)
     {
         if (_mainWindow is null || _mainViewModel is null)
         {
-            return;
+            return false;
         }
 
-        _mainViewModel.IsAddDialogOpen = true;
+        // Keeps the main window from hiding itself when the dialog takes focus.
+        _mainViewModel.IsDialogOpen = true;
 
         try
         {
-            var dialog = new AddPromptWindow
-            {
-                Owner = _mainWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                _mainViewModel.AddPrompt(dialog.PromptTitle, dialog.PromptContent);
-            }
+            dialog.Owner = _mainWindow;
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            return dialog.ShowDialog() == true;
         }
         finally
         {
-            _mainViewModel.IsAddDialogOpen = false;
+            _mainViewModel.IsDialogOpen = false;
             if (_mainWindow.IsVisible)
             {
                 _mainWindow.Activate();

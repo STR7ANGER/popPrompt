@@ -19,5 +19,8 @@ public sealed class Prompt
     public bool IsCopied { get; set; }
 
     [JsonIgnore]
+    public string GroupName { get; set; } = string.Empty;
+
+    [JsonIgnore]
     public string CreatedAtDisplay => CreatedAt.ToLocalTime().ToString("MMM d, yyyy h:mm tt");
 }

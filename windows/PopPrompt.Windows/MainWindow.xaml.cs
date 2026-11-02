@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using PopPrompt.Windows.ViewModels;
 
 namespace PopPrompt.Windows;
@@ -19,6 +21,7 @@ public partial class MainWindow : Window
         Deactivated += OnDeactivated;
         PreviewKeyDown += OnPreviewKeyDown;
         Closing += OnClosing;
+        _viewModel.Navigated += OnNavigated;
     }
 
     public void CloseFromApp()
@@ -29,7 +32,7 @@ public partial class MainWindow : Window
 
     private void OnDeactivated(object? sender, EventArgs e)
     {
-        if (!_viewModel.IsAddDialogOpen && IsVisible)
+        if (!_viewModel.IsDialogOpen && IsVisible)
         {
             Hide();
         }
@@ -39,9 +42,27 @@ public partial class MainWindow : Window
     {
         if (e.Key == Key.Escape)
         {
-            Hide();
+            if (!_viewModel.HandleEscape())
+            {
+                Hide();
+            }
+
             e.Handled = true;
         }
+    }
+
+    // Slides the screen in from the side it's navigating towards.
+    private void OnNavigated(bool intoGroup)
+    {
+        var duration = TimeSpan.FromMilliseconds(200);
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+        ScreenTranslate.BeginAnimation(
+            TranslateTransform.XProperty,
+            new DoubleAnimation(intoGroup ? 40 : -40, 0, duration) { EasingFunction = easing });
+        ScreenHost.BeginAnimation(
+            OpacityProperty,
+            new DoubleAnimation(0, 1, duration) { EasingFunction = easing });
     }
 
     private void OnClosing(object? sender, CancelEventArgs e)

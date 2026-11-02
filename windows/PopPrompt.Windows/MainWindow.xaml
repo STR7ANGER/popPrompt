@@ -30,190 +30,388 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="14">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="18">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Capsule button for inline and dialog actions. -->
+        <Style x:Key="PillButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#14FFFFFF" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="14,7" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="16"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Invisible button that keeps its whole area clickable. -->
+        <Style x:Key="PlainButtonStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Background" Value="#0FFFFFFF" />
+            <Setter Property="BorderBrush" Value="#1AFFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style x:Key="CardGlyphStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
     </Window.Resources>
 
-    <Border Background="Black"
-            BorderBrush="#1AFFFFFF"
-            BorderThickness="1"
-            CornerRadius="24"
-            Padding="16"
-            SnapsToDevicePixels="True">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    <Grid>
+        <Border Background="Black"
+                BorderBrush="#1AFFFFFF"
+                BorderThickness="1"
+                CornerRadius="24"
+                Padding="16"
+                SnapsToDevicePixels="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <DockPanel Grid.Row="0" LastChildFill="False">
-                <Border Background="White"
-                        CornerRadius="15"
-                        Padding="13,9"
-                        DockPanel.Dock="Left">
-                    <TextBlock Text="PopPrompt"
-                               Foreground="Black"
-                               FontSize="17"
-                               FontWeight="Bold" />
-                </Border>
+                <DockPanel Grid.Row="0" LastChildFill="False">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Button Style="{StaticResource CircleButtonStyle}"
+                                Width="36"
+                                Height="36"
+                                Margin="0,0,10,0"
+                                Background="{Binding SearchButtonBackground}"
+                                Command="{Binding ToggleSearchCommand}">
+                            <TextBlock Text="⌕"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="{Binding SearchButtonForeground}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                        </Button>
 
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                    <Button Style="{StaticResource CircleButtonStyle}"
-                            Width="36"
-                            Height="36"
-                            Margin="0,0,10,0"
-                            Background="{Binding SearchButtonBackground}"
-                            Command="{Binding ToggleSearchCommand}">
-                        <TextBlock Text="⌕"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"
-                                   Foreground="{Binding SearchButtonForeground}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                    </Button>
-
-                    <Button Style="{StaticResource CircleButtonStyle}"
-                            Width="36"
-                            Height="36"
-                            Background="#14FFFFFF"
-                            Command="{Binding OpenAddPromptCommand}">
-                        <TextBlock Text="+"
-                                   FontSize="18"
-                                   FontWeight="Bold"
-                                   Foreground="White"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                    </Button>
-                </StackPanel>
-            </DockPanel>
-
-            <Border Grid.Row="1"
-                    Margin="0,14,0,0"
-                    Padding="14,10"
-                    CornerRadius="14"
-                    Background="Black"
-                    BorderBrush="#24FFFFFF"
-                    BorderThickness="1"
-                    Visibility="{Binding IsSearchVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Grid>
-                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="White"
-                             CaretBrush="White"
-                             FontSize="13" />
-                    <TextBlock Text="Search prompts"
-                               Foreground="#66FFFFFF"
-                               FontSize="13"
-                               IsHitTestVisible="False"
-                               Visibility="{Binding IsSearchEmpty, Converter={StaticResource BoolToVisibilityConverter}}" />
-                </Grid>
-            </Border>
-
-            <Grid Grid.Row="2" Margin="0,14,0,0">
-                <Border Padding="24"
-                        CornerRadius="24"
-                        Background="#0FFFFFFF"
-                        BorderBrush="#1AFFFFFF"
-                        BorderThickness="1"
-                        Visibility="{Binding HasPrompts, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="▣"
-                                   Foreground="#D1FFFFFF"
-                                   FontSize="30"
-                                   HorizontalAlignment="Center" />
-                        <TextBlock Text="{Binding EmptyStateTitle}"
-                                   Foreground="White"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Margin="0,10,0,0"
-                                   HorizontalAlignment="Center" />
-                        <TextBlock Text="{Binding EmptyStateBody}"
-                                   Foreground="#9FFFFFFF"
-                                   FontSize="13"
-                                   Margin="0,8,0,0"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap" />
+                        <Button Style="{StaticResource CircleButtonStyle}"
+                                Width="36"
+                                Height="36"
+                                Command="{Binding AddCommand}">
+                            <TextBlock Text="+"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                        </Button>
                     </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <Button Style="{StaticResource CircleButtonStyle}"
+                                Width="36"
+                                Height="36"
+                                Margin="0,0,10,0"
+                                Command="{Binding BackCommand}"
+                                ToolTip="Back to groups"
+                                Visibility="{Binding IsInGroup, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="‹"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Margin="0,-3,0,0"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                        </Button>
+
+                        <Border Background="White"
+                                CornerRadius="15"
+                                Padding="13,9"
+                                MaxWidth="250">
+                            <TextBlock Text="{Binding HeaderTitle}"
+                                       Foreground="Black"
+                                       FontSize="17"
+                                       FontWeight="Bold"
+                                       TextTrimming="CharacterEllipsis" />
+                        </Border>
+                    </StackPanel>
+                </DockPanel>
+
+                <Border Grid.Row="1"
+                        Margin="0,14,0,0"
+                        Padding="14,10"
+                        CornerRadius="14"
+                        Background="Black"
+                        BorderBrush="#24FFFFFF"
+                        BorderThickness="1"
+                        Visibility="{Binding IsSearchVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Foreground="White"
+                                 CaretBrush="White"
+                                 FontSize="13" />
+                        <TextBlock Text="{Binding SearchPlaceholder}"
+                                   Foreground="#66FFFFFF"
+                                   FontSize="13"
+                                   IsHitTestVisible="False"
+                                   Visibility="{Binding IsSearchEmpty, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </Grid>
                 </Border>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              Visibility="{Binding HasPrompts, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ItemsControl ItemsSource="{Binding PromptsView}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Margin="0,0,0,12"
-                                        Padding="14"
-                                        CornerRadius="20"
-                                        Background="#0FFFFFFF"
-                                        BorderBrush="#1AFFFFFF"
-                                        BorderThickness="1">
-                                    <StackPanel>
-                                        <DockPanel LastChildFill="True">
-                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                                <Button Style="{StaticResource CircleButtonStyle}"
-                                                        Command="{Binding DataContext.CopyPromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"
-                                                        Margin="0,0,8,0">
-                                                    <TextBlock Text="{Binding IsCopied, Converter={StaticResource CopyGlyphConverter}}"
-                                                               Foreground="White"
-                                                               FontSize="11"
-                                                               FontWeight="Bold" />
-                                                </Button>
+                <Grid x:Name="ScreenHost" Grid.Row="2" Margin="0,14,0,0" ClipToBounds="True">
+                    <Grid.RenderTransform>
+                        <TranslateTransform x:Name="ScreenTranslate" />
+                    </Grid.RenderTransform>
 
-                                                <Button Style="{StaticResource CircleButtonStyle}"
-                                                        Command="{Binding DataContext.DeletePromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"
-                                                        Margin="0,0,8,0">
-                                                    <TextBlock Text="✕"
-                                                               Foreground="White"
-                                                               FontSize="11"
-                                                               FontWeight="Bold" />
-                                                </Button>
+                    <!-- Empty state: no groups, empty group, or no search matches. -->
+                    <Border Padding="24"
+                            CornerRadius="24"
+                            Background="#0FFFFFFF"
+                            BorderBrush="#1AFFFFFF"
+                            BorderThickness="1"
+                            Visibility="{Binding IsEmptyStateVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="▣"
+                                       Foreground="#D1FFFFFF"
+                                       FontSize="30"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="{Binding EmptyStateTitle}"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Margin="0,10,0,0"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="{Binding EmptyStateBody}"
+                                       Foreground="#9FFFFFFF"
+                                       FontSize="13"
+                                       Margin="0,8,0,0"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap" />
+                            <Button Style="{StaticResource PillButtonStyle}"
+                                    Background="White"
+                                    Foreground="Black"
+                                    FontSize="13"
+                                    Padding="16,10"
+                                    Margin="0,14,0,0"
+                                    HorizontalAlignment="Center"
+                                    Content="{Binding EmptyStateActionText}"
+                                    Command="{Binding AddCommand}"
+                                    Visibility="{Binding HasEmptyStateAction, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        </StackPanel>
+                    </Border>
 
-                                                <Button Style="{StaticResource CircleButtonStyle}"
-                                                        Command="{Binding DataContext.ToggleExpandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                    <!-- Groups screen. -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding IsGroupListVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <ItemsControl ItemsSource="{Binding Groups}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <StackPanel>
+                                            <DockPanel LastChildFill="True">
+                                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                                    <Button Style="{StaticResource CircleButtonStyle}"
+                                                            Margin="0,0,8,0"
+                                                            ToolTip="Rename or delete"
+                                                            Command="{Binding DataContext.ToggleGroupActionsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                        <TextBlock Text="⋯" Style="{StaticResource CardGlyphStyle}" />
+                                                    </Button>
+                                                    <Button Style="{StaticResource CircleButtonStyle}"
+                                                            Command="{Binding DataContext.OpenGroupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                        <TextBlock Text="›" Style="{StaticResource CardGlyphStyle}" FontSize="15" Margin="1,-2,0,0" />
+                                                    </Button>
+                                                </StackPanel>
+
+                                                <Button Style="{StaticResource PlainButtonStyle}"
+                                                        Margin="0,0,12,0"
+                                                        Command="{Binding DataContext.OpenGroupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                         CommandParameter="{Binding}">
-                                                    <TextBlock Text="{Binding IsExpanded, Converter={StaticResource ExpandGlyphConverter}}"
-                                                               Foreground="White"
-                                                               FontSize="11"
-                                                               FontWeight="Bold" />
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   Foreground="White"
+                                                                   FontSize="15"
+                                                                   FontWeight="SemiBold"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding CountDisplay}"
+                                                                   Foreground="#73FFFFFF"
+                                                                   FontSize="11"
+                                                                   Margin="0,3,0,0" />
+                                                    </StackPanel>
                                                 </Button>
+                                            </DockPanel>
+
+                                            <StackPanel Orientation="Horizontal"
+                                                        Margin="0,12,0,0"
+                                                        Visibility="{Binding IsActionsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <Button Style="{StaticResource PillButtonStyle}"
+                                                        Content="Rename"
+                                                        Margin="0,0,8,0"
+                                                        Command="{Binding DataContext.RenameGroupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}" />
+                                                <Button Style="{StaticResource PillButtonStyle}"
+                                                        Content="Delete"
+                                                        Command="{Binding DataContext.DeleteGroupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}" />
                                             </StackPanel>
-
-                                            <TextBlock Text="{Binding Title}"
-                                                       Foreground="White"
-                                                       FontSize="15"
-                                                       FontWeight="SemiBold"
-                                                       VerticalAlignment="Center"
-                                                       TextTrimming="CharacterEllipsis" />
-                                        </DockPanel>
-
-                                        <StackPanel Margin="0,12,0,0"
-                                                    Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
-                                            <Border Height="1" Background="#1AFFFFFF" Margin="0,0,0,10" />
-                                            <TextBlock Text="{Binding Content}"
-                                                       Foreground="#C7FFFFFF"
-                                                       FontSize="13"
-                                                       TextWrapping="Wrap" />
-                                            <TextBlock Text="{Binding CreatedAtDisplay}"
-                                                       Foreground="#73FFFFFF"
-                                                       FontSize="11"
-                                                       Margin="0,10,0,0" />
                                         </StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Prompts in a group, or search results across all groups. -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding IsPromptListVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <ItemsControl ItemsSource="{Binding VisiblePrompts}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <StackPanel>
+                                            <DockPanel LastChildFill="True">
+                                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                                    <Button Style="{StaticResource CircleButtonStyle}"
+                                                            Command="{Binding DataContext.CopyPromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}"
+                                                            Margin="0,0,8,0">
+                                                        <TextBlock Text="{Binding IsCopied, Converter={StaticResource CopyGlyphConverter}}"
+                                                                   Style="{StaticResource CardGlyphStyle}" />
+                                                    </Button>
+
+                                                    <Button Style="{StaticResource CircleButtonStyle}"
+                                                            Command="{Binding DataContext.ToggleExpandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                        <TextBlock Text="{Binding IsExpanded, Converter={StaticResource ExpandGlyphConverter}}"
+                                                                   Style="{StaticResource CardGlyphStyle}" />
+                                                    </Button>
+                                                </StackPanel>
+
+                                                <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                                                    <TextBlock Text="{Binding Title}"
+                                                               Foreground="White"
+                                                               FontSize="15"
+                                                               FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding GroupName}"
+                                                               Foreground="#73FFFFFF"
+                                                               FontSize="11"
+                                                               Margin="0,3,0,0"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Visibility="{Binding DataContext.ShowGroupNames, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Margin="0,12,0,0"
+                                                        Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <Border Height="1" Background="#1AFFFFFF" Margin="0,0,0,10" />
+                                                <TextBlock Text="{Binding Content}"
+                                                           Foreground="#C7FFFFFF"
+                                                           FontSize="13"
+                                                           TextWrapping="Wrap" />
+                                                <DockPanel Margin="0,10,0,0" LastChildFill="False">
+                                                    <TextBlock Text="{Binding CreatedAtDisplay}"
+                                                               Foreground="#73FFFFFF"
+                                                               FontSize="11"
+                                                               VerticalAlignment="Center"
+                                                               DockPanel.Dock="Left" />
+                                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                                        <Button Style="{StaticResource PillButtonStyle}"
+                                                                Content="Edit"
+                                                                Margin="0,0,8,0"
+                                                                Command="{Binding DataContext.EditPromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                CommandParameter="{Binding}" />
+                                                        <Button Style="{StaticResource PillButtonStyle}"
+                                                                Content="Delete"
+                                                                Command="{Binding DataContext.DeletePromptCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                CommandParameter="{Binding}" />
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
             </Grid>
-        </Grid>
-    </Border>
+        </Border>
+
+        <!-- Delete-group confirmation, drawn over the whole panel. -->
+        <Border CornerRadius="24"
+                Background="#99000000"
+                Visibility="{Binding IsDeleteConfirmVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border Margin="32"
+                    Padding="22"
+                    VerticalAlignment="Center"
+                    CornerRadius="24"
+                    Background="Black"
+                    BorderBrush="#1AFFFFFF"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="{Binding DeleteConfirmTitle}"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding DeleteConfirmBody}"
+                               Foreground="#9FFFFFFF"
+                               FontSize="13"
+                               Margin="0,10,0,0"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,16,0,0">
+                        <Button Style="{StaticResource PillButtonStyle}"
+                                Content="Cancel"
+                                FontSize="13"
+                                Padding="16,10"
+                                Margin="0,0,10,0"
+                                Command="{Binding CancelDeleteGroupCommand}" />
+                        <Button Style="{StaticResource PillButtonStyle}"
+                                Content="Delete"
+                                Background="White"
+                                Foreground="Black"
+                                FontSize="13"
+                                Padding="16,10"
+                                Command="{Binding ConfirmDeleteGroupCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
 </Window>
