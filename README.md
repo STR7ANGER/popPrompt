@@ -1,6 +1,6 @@
 # PopPrompt
 
-PopPrompt is now a dual-platform tray utility with native builds for macOS and Windows. Both apps share the same product behavior: save prompts, search them, expand inline content, copy in one click, and stay out of the way until opened from the menu bar or system tray.
+PopPrompt is a dual-platform tray utility with native builds for macOS and Windows. Both apps share the same product behavior: organize prompts and commands into groups, search them, expand inline content, copy in one click, and stay out of the way until opened from the menu bar or system tray.
 
 ## Repo Layout
 
@@ -12,6 +12,8 @@ windows/
   PopPrompt.Windows.sln
   PopPrompt.Windows/
   PopPrompt.Windows.Setup/
+shared/
+  default-groups.json   # starter groups bundled into both apps
 .github/workflows/
 ```
 
@@ -19,7 +21,11 @@ windows/
 
 - Tray/menu bar only interaction model
 - Monochrome black-and-white UI
-- Add, search, copy, delete, and expand prompts
+- Prompts organized into groups: open a group to see its prompts, go back with the back button or `Esc`
+- Create, rename, and delete groups
+- Add, edit, copy, delete, and expand prompts, and move a prompt to another group while editing
+- Search across all groups from the groups screen, or within the open group
+- Ships with **Git Commands** and **Linux & Bash** starter groups
 - Local persistence on both platforms
 - GitHub Actions builds `.dmg` and `.msi` installers and publishes them to GitHub Releases on version tags
 
@@ -39,8 +45,16 @@ windows/
 
 ## Persistence
 
-- macOS stores prompts in `UserDefaults`.
-- Windows stores prompts in `%AppData%/PopPrompt/prompts.json`.
+- macOS stores groups in `UserDefaults` under the `groups` key.
+- Windows stores groups in `%AppData%/PopPrompt/groups.json`.
+
+On first launch of v1.1, prompts saved by v1.0 are moved into a **My Prompts** group (the v1.0 data is left in place, so downgrading still works).
+
+## Starter Groups
+
+`shared/default-groups.json` is the single source for the starter groups. It is bundled as a resource on macOS and embedded in the Windows executable. The starter groups are added once, the first time v1.1 runs; deleting one won't bring it back.
+
+To change the starter content, edit that file. It applies to new installs, and to existing installs that haven't run v1.1 yet.
 
 ## Releases
 

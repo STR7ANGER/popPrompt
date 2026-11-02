@@ -1,7 +1,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="PopPrompt"
            Manufacturer="STR7ANGER"
-           Version="1.0.0"
+           Version="1.1.0"
            UpgradeCode="8E6B811E-57A0-4DB0-9854-D47F62A79B4D"
            Scope="perMachine"
            InstallerVersion="500"
