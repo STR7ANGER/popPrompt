@@ -11,4 +11,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Starter groups shared with the macOS app. -->
+    <EmbeddedResource Include="..\..\shared\default-groups.json" LogicalName="PopPrompt.Windows.default-groups.json" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,270 @@
+{
+  "groups": [
+    {
+      "name": "Git Commands",
+      "prompts": [
+        {
+          "title": "Check status (short)",
+          "content": "git status -sb"
+        },
+        {
+          "title": "Switch to a branch",
+          "content": "git switch <branch>"
+        },
+        {
+          "title": "Create and switch to a new branch",
+          "content": "git switch -c <new-branch>"
+        },
+        {
+          "title": "List all branches (local and remote)",
+          "content": "git branch -a"
+        },
+        {
+          "title": "Stage all changes",
+          "content": "git add -A"
+        },
+        {
+          "title": "Stage changes piece by piece",
+          "content": "git add -p"
+        },
+        {
+          "title": "Commit staged changes",
+          "content": "git commit -m \"<message>\""
+        },
+        {
+          "title": "Amend the last commit (keep message)",
+          "content": "git commit --amend --no-edit"
+        },
+        {
+          "title": "Push a new branch and track it",
+          "content": "git push -u origin HEAD"
+        },
+        {
+          "title": "Pull with rebase",
+          "content": "git pull --rebase"
+        },
+        {
+          "title": "Fetch and prune deleted branches",
+          "content": "git fetch --all --prune"
+        },
+        {
+          "title": "Log graph of all branches",
+          "content": "git log --oneline --graph --decorate --all"
+        },
+        {
+          "title": "Show staged changes",
+          "content": "git diff --staged"
+        },
+        {
+          "title": "Stash changes (including untracked)",
+          "content": "git stash push -u -m \"<message>\""
+        },
+        {
+          "title": "Apply and drop the latest stash",
+          "content": "git stash pop"
+        },
+        {
+          "title": "Cherry-pick a commit",
+          "content": "git cherry-pick <commit-sha>"
+        },
+        {
+          "title": "Interactive rebase of the last N commits",
+          "content": "git rebase -i HEAD~<n>"
+        },
+        {
+          "title": "Rebase onto the latest main",
+          "content": "git fetch origin && git rebase origin/main"
+        },
+        {
+          "title": "Undo the last commit but keep changes",
+          "content": "git reset --soft HEAD~1"
+        },
+        {
+          "title": "Discard changes to a file",
+          "content": "git restore <file>"
+        },
+        {
+          "title": "Unstage a file",
+          "content": "git restore --staged <file>"
+        },
+        {
+          "title": "Delete a local branch",
+          "content": "git branch -d <branch>"
+        },
+        {
+          "title": "Delete a remote branch",
+          "content": "git push origin --delete <branch>"
+        },
+        {
+          "title": "Tag and push a release",
+          "content": "git tag -a v<version> -m \"<message>\" && git push origin v<version>"
+        },
+        {
+          "title": "See who last changed some lines",
+          "content": "git blame -L <start>,<end> <file>"
+        },
+        {
+          "title": "Create a pull request (gh)",
+          "content": "gh pr create --fill"
+        },
+        {
+          "title": "List open pull requests (gh)",
+          "content": "gh pr list"
+        },
+        {
+          "title": "Check out a pull request to review (gh)",
+          "content": "gh pr checkout <number>"
+        },
+        {
+          "title": "View a pull request's diff (gh)",
+          "content": "gh pr diff <number>"
+        },
+        {
+          "title": "See a pull request's CI checks (gh)",
+          "content": "gh pr checks <number>"
+        },
+        {
+          "title": "Approve a pull request (gh)",
+          "content": "gh pr review <number> --approve"
+        },
+        {
+          "title": "Request changes on a pull request (gh)",
+          "content": "gh pr review <number> --request-changes -b \"<comment>\""
+        },
+        {
+          "title": "Squash-merge a pull request and delete its branch (gh)",
+          "content": "gh pr merge <number> --squash --delete-branch"
+        }
+      ]
+    },
+    {
+      "name": "Linux & Bash",
+      "prompts": [
+        {
+          "title": "List files with details",
+          "content": "ls -lah"
+        },
+        {
+          "title": "Find files by name",
+          "content": "find . -name \"<pattern>\""
+        },
+        {
+          "title": "Search for text in files",
+          "content": "grep -rn \"<text>\" ."
+        },
+        {
+          "title": "Show folder sizes here, smallest first",
+          "content": "du -sh * | sort -h"
+        },
+        {
+          "title": "Show free disk space",
+          "content": "df -h"
+        },
+        {
+          "title": "Create nested folders",
+          "content": "mkdir -p <path/to/folder>"
+        },
+        {
+          "title": "Copy a folder",
+          "content": "cp -r <source> <destination>"
+        },
+        {
+          "title": "Move or rename a file",
+          "content": "mv <source> <destination>"
+        },
+        {
+          "title": "Delete a folder and everything in it",
+          "content": "rm -rf <folder>"
+        },
+        {
+          "title": "Create a symbolic link",
+          "content": "ln -s <target> <link-name>"
+        },
+        {
+          "title": "Make a script executable",
+          "content": "chmod +x <file>"
+        },
+        {
+          "title": "Show which program a command runs",
+          "content": "which <command>"
+        },
+        {
+          "title": "Find a running process",
+          "content": "ps aux | grep <name>"
+        },
+        {
+          "title": "See what's using a port",
+          "content": "lsof -i :<port>"
+        },
+        {
+          "title": "Stop a process by PID",
+          "content": "kill <pid>"
+        },
+        {
+          "title": "Stop whatever is using a port",
+          "content": "kill $(lsof -t -i :<port>)"
+        },
+        {
+          "title": "Follow a log file live",
+          "content": "tail -f <file>"
+        },
+        {
+          "title": "Show the last 100 lines of a file",
+          "content": "tail -n 100 <file>"
+        },
+        {
+          "title": "Count lines in a file",
+          "content": "wc -l <file>"
+        },
+        {
+          "title": "Search command history",
+          "content": "history | grep <text>"
+        },
+        {
+          "title": "Re-run the last command with sudo",
+          "content": "sudo !!"
+        },
+        {
+          "title": "Create a .tar.gz archive",
+          "content": "tar -czvf <archive>.tar.gz <folder>"
+        },
+        {
+          "title": "Extract a .tar.gz archive",
+          "content": "tar -xzvf <archive>.tar.gz"
+        },
+        {
+          "title": "Connect to a server over SSH",
+          "content": "ssh <user>@<host>"
+        },
+        {
+          "title": "Copy a file to a server",
+          "content": "scp <file> <user>@<host>:<path>"
+        },
+        {
+          "title": "Generate an SSH key",
+          "content": "ssh-keygen -t ed25519 -C \"<email>\""
+        },
+        {
+          "title": "Copy your SSH key to a server",
+          "content": "ssh-copy-id <user>@<host>"
+        },
+        {
+          "title": "Download a file",
+          "content": "curl -LO <url>"
+        },
+        {
+          "title": "Send a JSON POST request",
+          "content": "curl -X POST -H \"Content-Type: application/json\" -d '{\"key\": \"value\"}' <url>"
+        },
+        {
+          "title": "List environment variables",
+          "content": "env | sort"
+        },
+        {
+          "title": "Set an environment variable for this session",
+          "content": "export <NAME>=<value>"
+        }
+      ]
+    }
+  ]
+}

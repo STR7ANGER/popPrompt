@@ -17,9 +17,14 @@ final class PromptStore: ObservableObject {
     private let legacyWelcomeTitle = "Welcome Prompt"
     private let legacyWelcomeContent = "Store your favorite prompts here, then copy them into any app with one click."
 
+    // Set once the bundled starter groups have been added, so deleting them is permanent.
+    private let didSeedDefaultsKey = "didSeedDefaults"
+    private let defaultGroupsURL: URL?
+
     private var hasLoaded = false
 
-    init() {
+    init(defaultGroupsURL: URL? = Bundle.main.url(forResource: "default-groups", withExtension: "json")) {
+        self.defaultGroupsURL = defaultGroupsURL
         load()
     }
 
@@ -123,14 +128,40 @@ final class PromptStore: ObservableObject {
     private func load() {
         defer { hasLoaded = true }
 
+        var loadedGroups: [PromptGroup]
         if let data = UserDefaults.standard.data(forKey: groupsKey),
            let decoded = try? JSONDecoder().decode([PromptGroup].self, from: data) {
-            groups = decoded
-            return
+            loadedGroups = decoded
+        } else {
+            loadedGroups = migratedLegacyGroups()
         }
 
-        groups = migratedLegacyGroups()
+        if !UserDefaults.standard.bool(forKey: didSeedDefaultsKey) {
+            let defaultGroups = bundledDefaultGroups()
+            if !defaultGroups.isEmpty {
+                loadedGroups.insert(contentsOf: defaultGroups, at: 0)
+                UserDefaults.standard.set(true, forKey: didSeedDefaultsKey)
+            }
+        }
+
+        groups = loadedGroups
         save()
+    }
+
+    /// Starter groups from `shared/default-groups.json`, which both the macOS and Windows apps bundle.
+    private func bundledDefaultGroups() -> [PromptGroup] {
+        guard let defaultGroupsURL,
+              let data = try? Data(contentsOf: defaultGroupsURL),
+              let file = try? JSONDecoder().decode(DefaultGroupsFile.self, from: data) else {
+            return []
+        }
+
+        return file.groups.map { group in
+            PromptGroup(
+                name: group.name,
+                prompts: group.prompts.map { Prompt(title: $0.title, content: $0.content) }
+            )
+        }
     }
 
     private func migratedLegacyGroups() -> [PromptGroup] {
@@ -146,4 +177,18 @@ final class PromptStore: ObservableObject {
         guard !keptPrompts.isEmpty else { return [] }
         return [PromptGroup(name: Self.migratedGroupName, prompts: keptPrompts)]
     }
+}
+
+private struct DefaultGroupsFile: Decodable {
+    struct Group: Decodable {
+        let name: String
+        let prompts: [Item]
+    }
+
+    struct Item: Decodable {
+        let title: String
+        let content: String
+    }
+
+    let groups: [Group]
 }

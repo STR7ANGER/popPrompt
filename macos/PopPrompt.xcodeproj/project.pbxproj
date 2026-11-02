@@ -4,6 +4,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A0000000000000000000003A /* default-groups.json in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000003B /* default-groups.json */; };
 		A00000000000000000000030 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000031 /* Components.swift */; };
 		A00000000000000000000032 /* PromptCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000033 /* PromptCardView.swift */; };
 		A00000000000000000000034 /* GroupListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000035 /* GroupListView.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A0000000000000000000003B /* default-groups.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "default-groups.json"; path = "../shared/default-groups.json"; sourceTree = "<group>"; };
 		A00000000000000000000031 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		A00000000000000000000033 /* PromptCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptCardView.swift; sourceTree = "<group>"; };
 		A00000000000000000000035 /* GroupListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupListView.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				A0000000000000000000001C /* PopPrompt */,
+				A0000000000000000000003B /* default-groups.json */,
 				A0000000000000000000001D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -177,6 +180,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00000000000000000000009 /* Assets.xcassets in Resources */,
+				A0000000000000000000003A /* default-groups.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
